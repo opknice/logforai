@@ -172,7 +172,7 @@ void WriteLog(const char* direction, const char* buf, int len) {
     if (len < 2) return;
 
     FILE* f = NULL;
-    if (fopen_s(&f, "C:\\Users\\Public\\bamboo_analysis.log", "a") != 0) return;
+    if (fopen_s(&f, "D:\\logforai\\Find Packet\\bamboo_analysis.log", "a") != 0) return;
 
     unsigned short opcode = *(unsigned short*)(buf);
     char ts[16];
