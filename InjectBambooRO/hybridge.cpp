@@ -189,7 +189,7 @@ void WriteLog(const char* dir, const char* buf, int len) {
     if (len < 2) return;
 
     FILE* f = nullptr;
-    if (fopen_s(&f, "C:\\Users\\Public\\bamboo_analysis.log", "a") != 0) return;
+    if (fopen_s(&f, "D:\\logforai\\bamboo_analysis.log", "a") != 0) return;
 
     unsigned short op = *(unsigned short*)buf;
     char ts[16];

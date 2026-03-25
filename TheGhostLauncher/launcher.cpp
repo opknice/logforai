@@ -2,7 +2,7 @@
 #include <iostream>
 
 int main() {
-    char dllPath[] = "D:\\logforai\\version\\version.dll"; // Path ของ DLL เราข้างนอกเกม
+    char dllPath[] = "D:\\logforai\\InjectBambooRO\\version.dll"; // Path ของ DLL เราข้างนอกเกม
     char gamePath[] = "BamBoo_Client.exe";
 
     STARTUPINFOA si = { sizeof(si) };
