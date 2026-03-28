@@ -1,0 +1,1 @@
+function detect(){return PE.isNetObjectPresent("CsvHelper")&&(bDetected=1),result()}meta("library","CsvHelper")

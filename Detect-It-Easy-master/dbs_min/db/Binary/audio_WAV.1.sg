@@ -1,0 +1,518 @@
+function detect(){var e,s,a=12,i=_BE,r=[],o=[],n=cue=0,c=nRate=nChannels=nBPS=0,V=-1,b=-1,k=0,S=0,t=4,C="",A="",M="",l="",P="",u="",d="",I="",D=[!1,!1,!1]
+if(!(X.Sz()<36)){if(X.c("'RIFF'........'WAVE'"))i=_LE
+else{if(!X.c("'RIFX'........'WAVE'"))return
+i=_BE}if(!((b=8+X.U32(4,i))<12)){for(b-8>=X.Sz()&&X.c("'NXBF'",36)&&(b=X.Sz());a<X.Sz()&&a<b;){switch(e=X.SA(a,4),t=X.U32(a+4,i),a+=8,e){case"fmt ":switch(D[0]=!0,S=t,c=X.U16(a,i),nChannels=X.U16(a+2,i),nRate=X.U32(a+4,i),nBlockSize=X.U16(a+12,i),nBPS=X.U16(a+14,i),c){case 0:sVersion="Yamaha AICA ADPCM (unofficial)",b-4==X.Sz()?b-=4:b-8==X.Sz()?b-=8:b+2==X.Sz()&&(b-=2),18==t&&(t+=2)
+break
+case 1:if(7&nBPS||!isWithin(nBPS,8,32))return
+sVersion="Microsoft PCM"+(32==nBPS?"32_le":24==nBPS?"24_le":16==nBPS?"16":"8U")+" (uncompressed)"
+break
+case 2:if(4==nBPS){if((function(e){var s=[[256,0],[512,-256],[0,0],[192,64],[240,0],[460,-208],[392,-232]]
+if(7!=X.U16(e,i))return-1
+e+=2
+for(var a=0;a<7;a++,e+=4){var r=X.I16(e,i),o=X.I16(e+2,i)
+if(r!=s[a][0]||o!=s[a][1])return-1}return e})(a+20)<0)return}else sVersion=16==nBPS&&nBlockSize==2*nChannels&&12<=b?"MS-IMA ADPCM":"Microsoft ADPCM"
+break
+case 3:if(32!=nBPS)return
+sVersion="Microsoft IEEE float"
+break
+case 4:sVersion="Compaq VSELP"
+break
+case 5:sVersion="IBM CVSD"
+break
+case 6:sVersion="ITU G.711 a-law"
+break
+case 7:sVersion="ITU G.711 u-law"
+break
+case 8:sVersion="Microsoft DTS"
+break
+case 9:sVersion="DRM"
+break
+case 10:sVersion="WMA 9 Speech"
+break
+case 11:sVersion="Microsoft Windows Media RT Voice"
+break
+case 16:sVersion="OKI-ADPCM"
+break
+case 17:sVersion=4==nBPS?"MS-IMA ADPCM":"Intel IMA/DVI-ADPCM",b-8>>2==X.U32(48,i)?b=X.Sz():X.Sz()-b-16<=2304&&X.c("'cont'",b)&&(b+=8+X.U32(b+4,i))
+break
+case 18:sVersion="Videologic Mediaspace ADPCM"
+break
+case 19:sVersion="Sierra ADPCM"
+break
+case 20:sVersion="Antex G.723 ADPCM"
+break
+case 21:sVersion="DSP Solutions DIGISTD"
+break
+case 22:sVersion="DSP Solutions DIGIFIX"
+break
+case 23:sVersion="Dialogic OKI ADPCM"
+break
+case 24:sVersion="Media Vision ADPCM"
+break
+case 25:sVersion="HP CU"
+break
+case 26:sVersion="HP Dynamic Voice"
+break
+case 32:sVersion=4==nBPS?"Yamaha AICA ADPCM":"Yamaha ADPCM"
+break
+case 33:sVersion="SONARC Speech Compression"
+break
+case 34:sVersion="DSP Group True Speech"
+break
+case 35:sVersion="Echo Speech Corp."
+break
+case 36:sVersion="Virtual Music Audiofile AF36"
+break
+case 37:sVersion="Audio Processing Tech."
+break
+case 38:sVersion="Virtual Music Audiofile AF10"
+break
+case 39:sVersion="Aculab Prosody 1612"
+break
+case 40:sVersion="Merging Tech. LRC"
+break
+case 48:sVersion="Dolby AC2"
+break
+case 49:sVersion="Microsoft GSM610"
+break
+case 50:sVersion="MSN Audio"
+break
+case 51:sVersion="Antex ADPCM"
+break
+case 52:sVersion="Control Resources VQLPC"
+break
+case 53:sVersion="DSP Solutions DIGIREAL"
+break
+case 54:sVersion="DSP Solutions DIGIADPCM"
+break
+case 55:sVersion="Control Resources CR10"
+break
+case 56:sVersion="Natural MicroSystems VBX ADPCM"
+break
+case 57:sVersion="Crystal Semiconductors IMA ADPCM"
+break
+case 58:sVersion="Echo Speech ECHOSC3"
+break
+case 59:sVersion="Rockwell ADPCM"
+break
+case 60:sVersion="Rockwell DIGITALK"
+break
+case 61:sVersion="Xebec Multimedia"
+break
+case 64:sVersion="Antex G.721 ADPCM"
+break
+case 65:sVersion="Antex G.728 CELP"
+break
+case 66:sVersion="Microsoft MSG723"
+break
+case 67:sVersion="IBM AVC ADPCM"
+break
+case 69:sVersion="ITU-T G.726"
+break
+case 80:sVersion="Microsoft MPEG"
+break
+case 81:sVersion="RT23 or PAC"
+break
+case 82:sVersion="InSoft RT24"
+break
+case 83:sVersion="InSoft PAC"
+break
+case 85:sVersion="MP3"
+break
+case 89:sVersion="Cirrus"
+break
+case 96:sVersion="Cirrus Logic"
+break
+case 97:sVersion="ESS Tech. PCM"
+break
+case 98:sVersion="Voxware Inc."
+break
+case 99:sVersion="Canopus ATRAC"
+break
+case 100:sVersion="APICOM G.726 ADPCM"
+break
+case 101:sVersion="APICOM G.722 ADPCM"
+break
+case 102:sVersion="Microsoft DSAT"
+break
+case 103:sVersion="Microsoft DSAT-DISPLAY"
+break
+case 105:sVersion=4==nBPS?"XBOX IMA ADPCM":"Voxware Byte Aligned",b-8==X.Sz()?b-=8:b-4==X.Sz()?b-=4:b+8==X.Sz()&&(b+=8)
+break
+case 112:sVersion="Voxware ACB"
+break
+case 113:sVersion="Voxware AC10"
+break
+case 114:sVersion="Voxware AC16"
+break
+case 115:sVersion="Voxware AC20"
+break
+case 116:sVersion="Voxware MetaVoice"
+break
+case 117:sVersion="Voxware MetaSound"
+break
+case 118:sVersion="Voxware RT29HW"
+break
+case 119:sVersion="Voxware VR12"
+break
+case 120:sVersion="Voxware VR18"
+break
+case 121:sVersion="Voxware TQ40"
+break
+case 122:sVersion=extIs("med")?4==nBPS?"4-bit MS-IMA ADPCM":3==nBPS?"3-bit MS-IMA ADPCM":"Voxware SC3/med":"Voxware SC3"
+break
+case 123:sVersion="Voxware SC3"
+break
+case 128:sVersion="Soundsoft"
+break
+case 129:sVersion="Voxware TQ60"
+break
+case 130:sVersion="Microsoft MSRT24"
+break
+case 131:sVersion="AT&T G.729A"
+break
+case 132:sVersion="Motion Pixels MVI-MV12"
+break
+case 133:sVersion="DataFusion G.726"
+break
+case 134:sVersion="DataFusion GSM610"
+break
+case 136:sVersion="Iterated Systems Audio"
+break
+case 137:sVersion="Onlive"
+break
+case 138:sVersion="Multitude, Inc. FT SX20"
+break
+case 139:sVersion="Infocom IT’S A/S G.721 ADPCM"
+break
+case 140:sVersion="Convedia G729"
+break
+case 141:sVersion="Congruency, Inc. (not specified)"
+break
+case 145:sVersion="Siemens SBC24"
+break
+case 146:sVersion="Sonic Foundry Dolby AC3 APDIF"
+break
+case 147:sVersion="MediaSonic G.723"
+break
+case 148:sVersion="Aculab Prosody 8kbps"
+break
+case 151:sVersion="ZyXEL ADPCM"
+break
+case 152:sVersion="Philips LPCBB"
+break
+case 153:sVersion="Studer Professional Audio Packed"
+break
+case 160:sVersion="Maiden PhonyTalk"
+break
+case 161:sVersion="Racal Recorder GSM"
+break
+case 162:sVersion="Racal Recorder G720.a"
+break
+case 163:sVersion="Racal G723.1"
+break
+case 164:sVersion="Racal Tetra ACELP"
+break
+case 176:sVersion="NEC AAC NEC Corporation"
+break
+case 255:sVersion="AAC"
+break
+case 256:sVersion="Rhetorex ADPCM"
+break
+case 257:sVersion="IBM u-Law"
+break
+case 258:sVersion="IBM a-Law"
+break
+case 259:sVersion="IBM ADPCM"
+break
+case 273:sVersion="Vivo G.723"
+break
+case 274:sVersion="Vivo Siren"
+break
+case 288:sVersion="Philips Speech Processing CELP"
+break
+case 289:sVersion="Philips Speech Processing GRUNDIG"
+break
+case 291:sVersion="Digital G.723"
+break
+case 293:sVersion="Sanyo LD ADPCM"
+break
+case 304:sVersion="Sipro Lab ACEPLNET"
+break
+case 305:sVersion="Sipro Lab ACELP4800"
+break
+case 306:sVersion="Sipro Lab ACELP8V3"
+break
+case 307:sVersion="Sipro Lab G.729"
+break
+case 308:sVersion="Sipro Lab G.729A"
+break
+case 309:sVersion="Sipro Lab Kelvin"
+break
+case 310:sVersion="VoiceAge AMR"
+break
+case 320:sVersion="Dictaphone G.726 ADPCM"
+break
+case 336:sVersion="Qualcomm PureVoice"
+break
+case 337:sVersion="Qualcomm HalfRate"
+break
+case 341:sVersion="Ring Zero Systems TUBGSM"
+break
+case 352:sVersion="Microsoft Audio1"
+break
+case 353:sVersion="Windows Media Audio V2 V7 V8 V9 / DivX audio (WMA) / Alex AC3 Audio"
+break
+case 354:sVersion="Windows Media Audio Professional V9"
+break
+case 355:sVersion="Windows Media Audio Lossless V9"
+break
+case 356:sVersion="WMA Pro over S/PDIF"
+break
+case 368:sVersion="UNISYS NAP ADPCM"
+break
+case 369:sVersion="UNISYS NAP ULAW"
+break
+case 370:sVersion="UNISYS NAP ALAW"
+break
+case 371:sVersion="UNISYS NAP 16K"
+break
+case 372:sVersion="MM SYCOM ACM SYC008 SyCom Technologies"
+break
+case 373:sVersion="MM SYCOM ACM SYC701 G726L SyCom Technologies"
+break
+case 374:sVersion="MM SYCOM ACM SYC701 CELP54 SyCom Technologies"
+break
+case 375:sVersion="MM SYCOM ACM SYC701 CELP68 SyCom Technologies"
+break
+case 376:sVersion="Knowledge Adventure ADPCM"
+break
+case 384:sVersion="Fraunhofer IIS MPEG2AAC"
+break
+case 400:sVersion="Digital Theater Systems DTS DS"
+break
+case 512:sVersion="Creative Labs ADPCM"
+break
+case 514:sVersion="Creative Labs FASTSPEECH8"
+break
+case 515:sVersion="Creative Labs FASTSPEECH10"
+break
+case 528:sVersion="UHER ADPCM"
+break
+case 533:case 534:sVersion="Ulead DV ACM"
+break
+case 544:sVersion="Quarterdeck Corp."
+break
+case 560:sVersion="I-Link VC"
+break
+case 576:sVersion="Aureal Semiconductor Raw Sport"
+break
+case 577:sVersion="ESST AC3"
+break
+case 592:sVersion="Interactive Products HSX"
+break
+case 593:sVersion="Interactive Products RPELP"
+break
+case 608:sVersion="Consistent CS2"
+break
+case 624:sVersion="ATRAC3/Sony SCX"
+break
+case 625:sVersion="Sony SCY"
+break
+case 626:sVersion="Sony ATRAC3"
+break
+case 627:sVersion="Sony SPC"
+break
+case 640:sVersion="TELUM Telum Inc."
+break
+case 641:sVersion="TELUMIA Telum Inc."
+break
+case 645:sVersion="Norcom Voice Systems ADPCM"
+break
+case 768:b-8==X.Sz()&&(b-=8),sVersion=4==nBPS&&nBlockSize==1024*nChannels&&12==b&&1==nChannels?"DVI IMA":"Fujitsu FM TOWNS SND"
+break
+case 769:case 770:case 771:case 772:case 773:case 774:case 775:case 776:sVersion="Fujitsu (not specified)"
+break
+case 848:sVersion="Micronas Semiconductors, Inc. Development"
+break
+case 849:sVersion="Micronas Semiconductors, Inc. CELP833"
+break
+case 1024:sVersion="Brooktree Digital"
+break
+case 1025:sVersion="Intel Music Coder (IMC)"
+break
+case 1026:sVersion="Ligos Indeo Audio"
+break
+case 1104:sVersion="QDesign Music"
+break
+case 1280:sVersion="On2 VP7 On2 Technologies"
+break
+case 1281:sVersion="On2 VP6 On2 Technologies"
+break
+case 1365:sVersion="Level-5 4-bit ADPCM"
+var p=b+4*(X.U16(22,i)-1)
+p<X.Sz()&&X.Sz()-p<16&&(b=p)
+break
+case 1664:sVersion="AT&T VME VMPCM"
+break
+case 1665:sVersion="AT&T TCP"
+break
+case 1792:sVersion="YMPEG Alpha (dummy for MPEG-2 compressor)"
+break
+case 2222:sVersion="ClearJump LiteWave (lossless)"
+break
+case 4096:sVersion="Olivetti GSM"
+break
+case 4097:sVersion="Olivetti ADPCM"
+break
+case 4098:sVersion="Olivetti CELP"
+break
+case 4099:sVersion="Olivetti SBC"
+break
+case 4100:sVersion="Olivetti OPR"
+break
+case 4352:sVersion="Lernout & Hauspie"
+break
+case 4353:sVersion="Lernout & Hauspie CELP"
+break
+case 4354:case 4355:case 4356:sVersion="Lernout & Hauspie SBC"
+break
+case 5120:sVersion="Norris Comm. Inc."
+break
+case 5121:sVersion="ISIAudio"
+break
+case 5376:sVersion="AT&T Soundspace Music Compression"
+break
+case 6172:sVersion="VoxWare RT24 speech"
+break
+case 6174:sVersion="Lucent elemedia AX24000P Music"
+break
+case 6513:sVersion="Sonic Foundry LOSSLESS"
+break
+case 6521:sVersion="Innings Telecom Inc. ADPCM"
+break
+case 7175:sVersion="Lucent SX8300P speech"
+break
+case 7180:sVersion="Lucent SX5363S G.723 compliant"
+break
+case 7939:sVersion="CUseeMe DigiTalk (ex-Rocwell)"
+break
+case 8132:sVersion="NCT Soft ALF2CD ACM"
+break
+case 8192:sVersion="FAST Multimedia DVM"
+break
+case 8193:sVersion="Dolby DTS"
+break
+case 8194:sVersion="RealAudio 1 / 2 14.4"
+break
+case 8195:sVersion="RealAudio 1 / 2 28.8"
+break
+case 8196:sVersion="RealAudio G2 / 8 Cook (low bitrate)"
+break
+case 8197:sVersion="RealAudio 3 / 4 / 5 Music (DNET)"
+break
+case 8198:sVersion="RealAudio 10 AAC (RAAC)"
+break
+case 8199:sVersion="RealAudio 10 AAC+ (RACP)"
+break
+case 9472:sVersion="Reserved range to 0x2600 Microsoft"
+break
+case 13075:sVersion="makeAVIS (ffvfw fake AVI sound from AviSynth scripts)"
+break
+case 16707:sVersion="Divio MPEG-4 AAC audio"
+break
+case 16897:sVersion="Nokia adaptive multirate"
+break
+case 16963:sVersion="Divio G726 Divio, Inc."
+break
+case 17228:sVersion="LEAD Speech"
+break
+case 22092:sVersion="LEAD Vorbis"
+break
+case 22358:sVersion="WavPack Audio"
+break
+case 26447:sVersion="Ogg Vorbis (mode 1)"
+break
+case 26448:sVersion="Ogg Vorbis (mode 2)"
+break
+case 26449:sVersion="Ogg Vorbis (mode 3)"
+break
+case 26479:sVersion="Ogg Vorbis (mode 1+)"
+break
+case 26480:sVersion="Ogg Vorbis (mode 2+)"
+break
+case 26481:sVersion="Ogg Vorbis (mode 3+)"
+break
+case 28672:sVersion="3COM NBX 3Com Corporation"
+break
+case 28781:sVersion="FAAD AAC"
+break
+case 31265:sVersion="GSM-AMR (CBR, no SID)"
+break
+case 31266:sVersion="GSM-AMR (VBR, including SID)"
+break
+case 41216:sVersion="Comverse Infosys Ltd. G723 1"
+break
+case 41217:sVersion="Comverse Infosys Ltd. AVQSBC"
+break
+case 41218:sVersion="Comverse Infosys Ltd. OLDSBC"
+break
+case 41219:sVersion="Symbol Technologies G729A"
+break
+case 41220:sVersion="VoiceAge AMR WB VoiceAge Corporation"
+break
+case 41221:sVersion="Ingenient Technologies Inc. G726"
+break
+case 41222:sVersion="ISO/MPEG-4 advanced audio Coding"
+break
+case 41223:sVersion="Encore Software Ltd G726"
+break
+case 41225:sVersion="Speex ACM Codec xiph.org"
+break
+case 57260:sVersion="DebugMode SonicFoundry Vegas FrameServer ACM"
+break
+case 61868:sVersion="Free Lossless Audio Codec FLAC"
+break
+case 65534:sVersion="Extensible"
+var p=X.U32(32,_LE),T=X.U16(36,_LE)<<16|X.U16(38,_LE),m=X.U32(40,_BE),L=X.U32(44,_BE)
+1==p&&16==T&&2147483818==m&&3709809==L&&16==nBPS&&(sVersion+=":PCM16"),3911428799==p&&3411559537==T&&2702835706==m&&31772258==L&&(sVersion+=":ATRAC3+"),1205945042==p&&918179213==T&&2298241381==m&&1334608748==L&&(sVersion+=":ATRAC9"),b+24==X.Sz()?b+=24:b+56==X.Sz()?b+=56:b+64==X.Sz()&&(b-=64)
+break
+case 65535:sVersion="Development"
+break
+default:sVersion="Unknown:"+Hex(c,4)}break
+case"fact":n=X.U32(a,_LE)
+break
+case"data":D[1]=!0,!nBPS||1!=c||nBPS%8||(s=Math.round(X.U32(a-4,i)/(nBPS>>3)/nRate/nChannels*1e4)/10,V=new Date(s).toISOString().substr(11,8))
+break
+case"cue":for(var E=a+4,f="",R=0;E<a+t&&E<X.Sz();)f=X.SA(E,4),R=X.U32(E+4,_LE),E+=8,"data"==f&&cue++,E+=R+R&1
+break
+case"cmnt":u=u.appendS(X.SC(a+2,t-8,"SJIS"),"\n")
+break
+case"LIST":case"list":if(["INFO","ADTL"].includes(X.SA(a,4).toUpperCase()))for(E=a+4,f="",R=0;E<a+t&&E<X.Sz();){switch(f=X.SA(E,4),R=X.U32(E+4,_LE),E+=8,f){case"INAM":C=X.SC(E,R,"CP1252")
+break
+case"IART":M=X.SC(E,R,"CP1252")
+break
+case"ICMS":P=X.SC(E,R,"CP1252")
+break
+case"ICOP":d=X.SC(E,R,"CP1252")
+break
+case"ICRD":A=X.SC(E,R,"CP1252")
+break
+case"ISFT":I=X.SC(E,R,"CP1252")
+break
+case"IGNR":l=X.SC(E,R,"CP1252")
+break
+case"ICMT":u=u.appendS(X.SC(E,R,"CP1252"),"\n")
+break
+case"labl":r.push(X.SC(E+4,R-4,"CP1252").trim())
+break
+case"ltxt":o.push(X.SC(E+20,R-20,X.SA(E+18,2)).trim())}E+=R+=1&R}break
+case"smpl":k=X.U32(a+28,i)
+break
+case"wsmp":k=X.U32(a+16,i)
+break
+case"ctrl":k=X.I32(a,i)?1:0
+break
+case"NXBF":t=X.U32(a,i),a+=4,ch+="/"+X.U32(a+12,i),k=0<=X.I32(16,i)?1:0
+break
+case"JUNK":D[2]=!0}a+=t+=1&t}if(D[0]&&D[1])return bDetected=1,sVersion+=i==_LE?"/le":"/be",fact=Math.round(n/1048576),2==c&&4==nBPS&&extIs("adpcm")&&!(nChannels<2||0<fact||54==S&&512!=nBlockSize||50==S&&![512,155,105].includes(nBlockSize))&&(sVersion=sVersion.appendS("UE4","/")),26368==(65280&c)&&b+1==X.Sz()&&(b+=1),X.isVerbose()&&(sOptionT(addEllipsis(C)),sOptionT(A,"created: "),sOptionT(addEllipsis(M),"by: "),sOptionT(l,"genre: "),sOptionT(addEllipsis(I),"s/w: "),sOptionT(addEllipsis(P),"cms.by: "),sOptionT(d,"©"),sOption(addEllipsis(u.trim()),'cmt: "','"'),r.length&&sOptionT(addEllipsis(r.filter(function(e){return 0<e.length}).join("; ")),'labels: "','"'),o.length&&sOptionT(addEllipsis(o.filter(function(e){return 0<e.length}).join("; ")),'captions: "','"'),sOption("ch:"+nChannels+(nBPS?" "+nBPS+"-bit":"")+" s/r:"+nRate+"Hz"+(n?" fact:"+fact+"M":"")+(-1!==V?" len: "+V:"")+(0<k?" looped"+(1<k?"×"+k:""):"")+" sz:"+outSz(b))),result()}}}meta("audio","RIFF container/WAVE file (.WAV)")

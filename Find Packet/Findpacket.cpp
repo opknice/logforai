@@ -3,7 +3,11 @@
 #include <winsock2.h>
 #include <stdio.h>
 #include <time.h>
+#include <intrin.h>
+#include <unordered_map>
+#include <string>
 
+#pragma intrinsic(_ReturnAddress)
 #pragma comment(lib, "ws2_32.lib")
 
 // ============================================================
@@ -17,67 +21,23 @@ recv_t pOriginalRecv = NULL;
 BYTE origSendBytes[5], origRecvBytes[5];
 
 static FILE* gConOut = NULL; // stdout ที่ redirect ไป CONOUT$
+static std::unordered_map<unsigned short, std::string> gOpNameMap;
+static bool gOpMapLoaded = false; // กันไม่ให้โหลดซ้ำ
+static HMODULE gSelfModule = nullptr; // เก็บ handle ของ DLL เพื่อหา path ตัวเอง
 
 // ============================================================
 //  OpCode Table (Ragnarök Online)
 // ============================================================
 // --- Helper: แปลง OpCode เป็นข้อความ ---
 const char* GetOpName(unsigned short opcode) {
-    switch (opcode) {
-        // --- Client → Server ---
-        case 0x0064: return "LOGIN_REQ";
-        case 0x0065: return "SELECT_SERVER";
-        case 0x0066: return "SELECT_CHAR";
-        case 0x007D: return "MAP_LOADED";
-        case 0x0078: return "WALK";
-        case 0x008D: return "ATTACK";
-        case 0x0093: return "USE_SKILL";
-        case 0x009F: return "PICK_UP_ITEM";
-        case 0x00A2: return "DROP_ITEM";
-        case 0x00A7: return "ITEM_USE";
-        case 0x00F3: return "CHAT_SEND";
-        case 0x0187: return "ACK_MONSTER_HP";
-        case 0x035F: return "WALK2";
-        case 0x0360: return "ATTACK2";
-        case 0x0436: return "CHAR_SELECT_CONFIRM";
-        case 0x0447: return "USE_SKILL2";
-        case 0x4F50: return "HTTP_POST_REQUEST";    // มาจากตัวอักษร 'PO' (POST)
-        case 0x2D2D: return "HTTP_MULTIPART_DATA";  // มาจากตัวอักษร '--' (Boundary)
-        case 0x08C9: return "CZ_COMPLETE_STABLE_STATE";
-        // --- Server → Client ---
-        case 0x0080: return "ITEM_PICKUP";
-        case 0x0081: return "DISCONNECT_ACK";
-        case 0x00B0: return "STATUS_CHANGE";
-        case 0x00B6: return "ENTITY_VANISH";
-        case 0x0162: return "SKILL_LIST";
-        case 0x01D7: return "EQUIPMENT_INFO";
-        case 0x0AC4: return "CHAR_INFO";
-        case 0x0AC5: return "CHAR_SELECT_RESP";
-        case 0x0B72: return "MAP_ENTITY_LIST";
-        case 0x09FF: return "MONSTER_MOVE";
-        case 0x09A1: return "SPAWN_ENTITY";
-        case 0x0B1B: return "PING";
-        case 0x0087: return "MOVE_ACK";
-        case 0x0000: return "NULL_PACKET";
-        case 0x01C3: return "ZC_NOTIFY_PLAYERCHAT";
-        case 0x0B1D: return "PING_REPLY_PONG";
-        case 0x007F: return "MAP_ENTER_ACK";
-        case 0x09FD: return "GEPARD_SECURITY_REQUEST";
-        case 0x4753: return "GEPARD_SECURITY_SEED";
-        case 0xC392: return "GEPARD_SECURITY_RESPONSE";
-        case 0x5448: return "HTTP_RESPONSE_HEADER"; // มาจากตัวอักษร 'HT' (HTTP/1.1)
-        case 0x227B: return "ZC_HOTKEY_CONFIG";
-        case 0x0ADE: return "ZC_NOTIFY_PLAYER_CHAT";
-        case 0xB063: return "GEPARD_SECURITY_TABLE_DATA";
-        case 0x8E8A: return "ZC_NOTIFY_MOVE_BATCH";
-        case 0x07FB: return "ZC_NOTIFY_MOVE_SINGLE";
-        case 0x0983: return "ZC_NOTIFY_HP";
-        case 0x09CB: return "ZC_NOTIFY_SP";
-        case 0x8D00: return "ZC_ENTITY_UPDATE_BATCH";
-        case 0xAEF1: return "GEPARD_RESOURCE_TABLE";
-        case 0x0196: return "ZC_NOTIFY_PLAYER_MOVE";
-        default:     return "UNKNOWN";
+    // ถ้า map ยังไม่ถูก load (ไม่ควรเกิด แต่ป้องกันไว้)
+    if (!gOpMapLoaded) return "MAP_NOT_LOADED";
+
+    auto it = gOpNameMap.find(opcode);
+    if (it != gOpNameMap.end()) {
+        return it->second.c_str(); // คืน pointer ของ string ใน map
     }
+    return "UNKNOWN";
 }
 
 // ============================================================
@@ -109,6 +69,7 @@ void InitConsole() {
     printf("==========================================================\n\n");
 }
 
+
 // ============================================================
 //  FormatTimestamp — เขียน HH:MM:SS ลง buffer ที่ส่งเข้ามา
 // ============================================================
@@ -118,6 +79,93 @@ static void FormatTimestamp(char* out, size_t sz) {
     localtime_s(&ltm, &now);
     sprintf_s(out, sz, "%02d:%02d:%02d",
               ltm.tm_hour, ltm.tm_min, ltm.tm_sec);
+}
+
+// LoadOpCodeMap — อ่านไฟล์ packetdescriptions.txt
+// แล้วเติมข้อมูลลง gOpNameMap
+// pathHint คือ path ของ DLL เองเพื่อค้นหาไฟล์ในโฟลเดอร์เดียวกัน
+static void LoadOpCodeMap(const char* dllPath) {
+    if (gOpMapLoaded) return; // โหลดครั้งเดียวพอ
+
+    // สร้าง path ของ txt จาก path ของ DLL
+    // เช่น "C:\game\HyBridge.dll" → "C:\game\packetdescriptions.txt"
+    char txtPath[MAX_PATH] = {};
+    strncpy_s(txtPath, dllPath, MAX_PATH);
+
+    // หา backslash ตัวสุดท้าย แล้วต่อชื่อไฟล์เข้าไป
+    char* lastSlash = strrchr(txtPath, '\\');
+    if (!lastSlash) lastSlash = strrchr(txtPath, '/');
+
+    if (lastSlash) {
+        // เขียนทับส่วนหลัง slash ด้วยชื่อไฟล์ที่ต้องการ
+        strcpy_s(lastSlash + 1, MAX_PATH - (lastSlash - txtPath) - 1,
+                 "packetdescriptions.txt");
+    } else {
+        // กรณีไม่มี path (ไม่น่าเกิด) ใช้ชื่อไฟล์ตรง ๆ
+        strcpy_s(txtPath, "packetdescriptions.txt");
+    }
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, txtPath, "r") != 0) {
+        printf("[!] Cannot open: %s\n", txtPath);
+        return;
+    }
+
+    char line[256];
+    while (fgets(line, sizeof(line), f)) {
+        // ตัด newline ออก
+        line[strcspn(line, "\r\n")] = '\0';
+
+        // ข้ามบรรทัดว่าง และ header [Recv] / [Send]
+        if (line[0] == '\0' || line[0] == '[') continue;
+
+        // parse: "HHHH Description text here"
+        // sscanf_s อ่าน hex 4 หลัก แล้วส่วนที่เหลือคือชื่อ
+        unsigned int opRaw = 0;
+        int charsRead = 0;
+        if (sscanf_s(line, "%4X %n", &opRaw, &charsRead) == 1) {
+            unsigned short op = (unsigned short)opRaw;
+            const char* name = line + charsRead; // ชี้ไปยังส่วนข้อความหลัง hex+space
+
+            // ถ้าชื่อซ้ำ (opcode เดียวกันปรากฏใน [Recv] และ [Send])
+            // เก็บอันแรกที่เจอไว้ก่อน — แก้ได้ด้วยการใส่ prefix ถ้าต้องการ
+            if (gOpNameMap.find(op) == gOpNameMap.end()) {
+                gOpNameMap[op] = std::string(name);
+            }
+        }
+    }
+
+    fclose(f);
+    gOpMapLoaded = true;
+    printf("[+] Loaded %zu opcodes from: %s\n", gOpNameMap.size(), txtPath);
+}
+
+
+// ============================================================
+//  GetStackTraceDetails — ดึงร่องรอย 4 ชั้น และดึงค่า OpCode
+// ============================================================
+void GetStackTraceDetails(char* outBuffer, size_t sz) {
+    const int MAX_FRAMES = 5; // ดึงมา 5 ชั้น (เผื่อชั้นที่ 1 คือฟังก์ชันนี้เอง)
+    void* stack[MAX_FRAMES];
+    WORD frames = CaptureStackBackTrace(1, MAX_FRAMES, stack, NULL);
+
+    outBuffer[0] = '\0';
+    char temp[256];
+
+    // วนลูปแสดงผลแค่ 4 ชั้นตามต้องการ
+    for (WORD i = 0; i < frames && i < 4; i++) {
+        unsigned char* codePtr = (unsigned char*)stack[i];
+        unsigned char bytes[8] = {0}; // เตรียมอ่านค่า 8 ไบต์
+
+        // ดึงค่าจาก Address โดยตรง (อ่าน Machine Code)
+        ReadProcessMemory(GetCurrentProcess(), codePtr, bytes, 8, NULL);
+
+        sprintf_s(temp, sizeof(temp), 
+                  "\n         Trace [%d]: 0x%p | OpCode: %02X %02X %02X %02X %02X %02X %02X %02X", 
+                  i+1, stack[i], bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7]);
+        
+        strcat_s(outBuffer, sz, temp);
+    }
 }
 
 // ============================================================
@@ -168,27 +216,32 @@ void PrintPacket(const char* direction, const char* buf, int len) {
 //  1) Hex string  (grep/ค้นหาง่าย — format เดิม)
 //  2) C ByteArray (เอาไป copy วาง packet builder ได้ทันที)
 // ============================================================
-void WriteLog(const char* direction, const char* buf, int len) {
+
+// เปลี่ยนพารามิเตอร์ตัวสุดท้ายจาก void* caller เป็น const char* stackTrace
+void WriteLog(const char* direction, const char* buf, int len, const char* stackTrace) {
     if (len < 2) return;
 
     FILE* f = NULL;
-    if (fopen_s(&f, "D:\\logforai\\Find Packet\\bamboo_analysis.log", "a") != 0) return;
+    if (fopen_s(&f, "D:\\logforai\\Find Packet\\analysis\\analysis.log", "a") != 0) return;
 
     unsigned short opcode = *(unsigned short*)(buf);
     char ts[16];
     FormatTimestamp(ts, sizeof(ts));
 
-    // บรรทัด 1: Hex — format เดิม
+    // บรรทัดแรก ข้อมูล Packet
     fprintf(f, "[%s] [%s] ID: %04X (%s) | Len: %d | Hex: ",
             ts, direction, opcode, GetOpName(opcode), len);
     for (int i = 0; i < len; i++)
         fprintf(f, "%02X ", (unsigned char)buf[i]);
 
-    // บรรทัด 2: Byte Array แบบ C-style
+    // แสดง Stack Trace ทั้ง 4 ชั้น พร้อมค่า OpCode
+    fprintf(f, "%s", stackTrace);
+
+    // ปิดท้ายด้วย ByteArray
     fprintf(f, "\n         ByteArray: { ");
     for (int i = 0; i < len; i++)
         fprintf(f, "0x%02X%s", (unsigned char)buf[i], (i < len - 1) ? ", " : "");
-    fprintf(f, " }\n");
+    fprintf(f, " }\n\n"); 
 
     fclose(f);
 }
@@ -198,11 +251,13 @@ void WriteLog(const char* direction, const char* buf, int len) {
 // ============================================================
 
 int WSAAPI MySendHook(SOCKET s, const char* buf, int len, int flags) {
-    // Log ก่อนส่งของจริง เพื่อให้เห็น intent ของ client
-    PrintPacket("C->S", buf, len);
-    WriteLog("C->S", buf, len);
+    char stackTrace[1024];
+    GetStackTraceDetails(stackTrace, sizeof(stackTrace));
 
-    // Trampoline: คืน original bytes ชั่วคราว → call จริง → re-hook
+    printf("\033[35m[Call Stack Captured]\033[0m\n");
+    PrintPacket("C->S", buf, len);
+    WriteLog("C->S", buf, len, stackTrace);
+
     DWORD old;
     VirtualProtect(pOriginalSend, 5, PAGE_EXECUTE_READWRITE, &old);
     memcpy(pOriginalSend, origSendBytes, 5);
@@ -215,7 +270,9 @@ int WSAAPI MySendHook(SOCKET s, const char* buf, int len, int flags) {
 }
 
 int WSAAPI MyRecvHook(SOCKET s, char* buf, int len, int flags) {
-    // Trampoline ก่อน: รับข้อมูลจริงเข้า buf แล้วค่อย log
+    char stackTrace[1024];
+    GetStackTraceDetails(stackTrace, sizeof(stackTrace));
+
     DWORD old;
     VirtualProtect(pOriginalRecv, 5, PAGE_EXECUTE_READWRITE, &old);
     memcpy(pOriginalRecv, origRecvBytes, 5);
@@ -226,8 +283,10 @@ int WSAAPI MyRecvHook(SOCKET s, char* buf, int len, int flags) {
     VirtualProtect(pOriginalRecv, 5, old, &old);
 
     if (res > 0) {
+        printf("\033[35m[Call Stack Captured]\033[0m\n");
         PrintPacket("S->C", buf, res);
-        WriteLog("S->C", buf, res);
+        // บันทึกลง Log สำหรับฝั่ง Recv
+        WriteLog("S->C", buf, res, stackTrace);
     }
     return res;
 }
@@ -236,8 +295,12 @@ int WSAAPI MyRecvHook(SOCKET s, char* buf, int len, int flags) {
 //  StartHooking — patch ws2_32!send และ ws2_32!recv
 // ============================================================
 void StartHooking() {
+    char dllPath[MAX_PATH] = {};
+    GetModuleFileNameA(gSelfModule, dllPath, MAX_PATH);
     InitConsole(); // เปิด Console ก่อนเสมอ
+    LoadOpCodeMap(dllPath);
 
+    
     HMODULE hWs2 = GetModuleHandleA("ws2_32.dll");
     if (!hWs2) { printf("[!] ws2_32.dll not found.\n"); return; }
 
@@ -276,6 +339,7 @@ void StartHooking() {
 // ============================================================
 BOOL APIENTRY DllMain(HMODULE h, DWORD reason, LPVOID lp) {
     if (reason == DLL_PROCESS_ATTACH) {
+        gSelfModule = h; // เก็บ handle ไว้ให้ StartHooking ใช้หา path ของ DLL
         DisableThreadLibraryCalls(h);
         CreateThread(0, 0, (LPTHREAD_START_ROUTINE)StartHooking, 0, 0, 0);
     }

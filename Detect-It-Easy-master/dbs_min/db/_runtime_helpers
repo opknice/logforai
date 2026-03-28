@@ -1,0 +1,16 @@
+String.prototype.append=function(){var t=String(this)
+return 0<arguments.length&&(0<t.length&&(t+=", "),t+=Array.prototype.join.call(arguments,", ")),t},String.prototype.appendS=function(t,e){var r=String(this)
+return t&&(0<r.length&&(r+="string"==typeof e?e:", "),r+=t),r},String.prototype.addIfNone=function(t){var e=String(this)
+return t&&e.indexOf(t)<0&&(e+=t),e},String.prototype.startsWith||(String.prototype.startsWith=function(t,e){e="number"==typeof e?Math.min(t.length,e):0
+return!(t.length>this.length-e)&&this.slice(e,t.length)==t}),String.prototype.startsWithCI=function(t,e){return arguments.length<2?this.toLowerCase().startsWith(t.toLowerCase()):this.toLowerCase().startsWith(t.toLowerCase(),e)},String.prototype.endsWith||(String.prototype.endsWith=function(t,e){e="number"==typeof e?Math.min(this.length,e):this.length
+return!(t.length>e||t.length&&this.slice(e-t.length,e)!=t)}),String.prototype.endsWithCI=function(t,e){return arguments.length<2?this.toLowerCase().endsWith(t.toLowerCase()):this.toLowerCase().endsWith(t.toLowerCase(),e)},String.prototype.repeat||(String.prototype.repeat=function(t){if("number"!=typeof t)return this
+for(var e=this,r=1;r<t;r++)e+=this
+return e}),String.prototype.padStart||(String.prototype.padStart=function(t,e){var r=this.valueOf()
+return t>>=0,e=String(e||" "),r.length>=t?String(r):((t-=r.length)>e.length&&(e+=e.repeat(Math.ceil(t/e.length))),e.slice(0,t)+String(r))}),Number.prototype.padStart||(Number.prototype.padStart=function(t,e){var r=this.valueOf().toString()
+return t>>=0,e=String(e||" "),r.length>=t?r:((t-=r.length)>e.length&&(e+=e.repeat(Math.ceil(t/e.length))),e.slice(0,t)+r)}),Number.prototype.clamp||(Number.prototype.clamp=function(t,e){return Math.min(Math.max(this,t),e)}),String.prototype.replaceAll||(String.prototype.replaceAll=function(t,e){if("string"!=typeof t||"string"!=typeof e)return"?"+t
+for(var r="",n=0;n<this.length;n++)this.slice(n,n+t.length)==t?(r+=e,n+=t.length-1):r+=this[n]
+return r}),Array.prototype.includes||(Array.prototype.includes=function(t,e){if(null==this)throw new TypeError('"this" is null or not defined')
+var r=Object(this),n=r.length>>>0
+if(0!=n)for(var e=0|e,i=Math.max(0<=e?e:n-Math.abs(e),0);i<n;){var o=r[i]
+if(o===t||"number"==typeof o&&"number"==typeof t&&isNaN(o)&&isNaN(t))return!0
+i++}return!1}),String.prototype.includes||(String.prototype.includes=function(t,e){return!((e="number"!=typeof e?0:e)+t.length>this.length)&&-1!==this.indexOf(t,e)})

@@ -1,0 +1,1 @@
+function detect(){return PE.isNetObjectPresent("ControlzEx")&&(bDetected=1),result()}meta("library","ControlzEx UI")

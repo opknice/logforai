@@ -1,0 +1,1 @@
+function detect(){return Binary.compare("01000800000000000000")&&(sOptions=File.cleanString(Binary.getString(26)),bDetected=1),result()}meta("format","CTRK")

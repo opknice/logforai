@@ -1,0 +1,1 @@
+function detect(){return Amiga.compareEP("70FF4E75'DELIRIUM'")?bDetected=1:Amiga.compareEP("........'DELIRIUM'")&&(bDetected=1,sOptions="Startup code"),result()}meta("module","DeliTracker player")

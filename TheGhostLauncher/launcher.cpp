@@ -2,8 +2,8 @@
 #include <iostream>
 
 int main() {
-    char dllPath[] = "D:\\logforai\\InjectBambooRO\\version.dll"; // Path ของ DLL เราข้างนอกเกม
-    char gamePath[] = "BamBoo_Client.exe";
+    char dllPath[] = "D:\\logforai\\openkore-master\\version.dll"; // Path ของ DLL เราข้างนอกเกม
+    char gamePath[] = "Rag.exe";
 
     STARTUPINFOA si = { sizeof(si) };
     PROCESS_INFORMATION pi;

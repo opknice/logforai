@@ -1,0 +1,1 @@
+function detect(){return PE.isLibraryPresent("coreclr.dll")&&(bDetected=1,sVersion="5.XX+"),result()}meta("library",".NET Core runtime")

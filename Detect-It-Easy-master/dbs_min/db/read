@@ -1,0 +1,112 @@
+function decEncoding(t,r,e,i){if(void 0===r)return""
+if(void 0===e&&(e=!0),129<r.length)for(var n="",s=0;s<t.length&&(t[s]||!e);s++)n+=r[t[s]]
+else{void 0===i&&(i=r==CPSpeccy?Chars0to1FSpeccy:r==CPATASCII?Chars0to1FATASCII:Chars0to1FCRLF)
+for(var n="",a=0,s=0;s<t.length&&(t[s]||!e);s++)if(t[s]<128)switch(t[s]){case 14:r==JISX0201||r==KOI8R?a=128:n+=i[14]
+break
+case 15:r==JISX0201||r==KOI8R?a=0:n+=i[15]
+break
+case 92:r==JISX0201?n+="¥":n+="\\"
+break
+case 94:r==CPSpeccy?n+="↑":n+="^"
+break
+case 96:r==CPSpeccy?n+="£":r==CPPETSCIIshifted?n+=" ":n+="`"
+break
+case 123:r==CPATASCII?i==Chars0to1FATASCII2?n+="Ä":i==Chars0to1FATASCII_PL?n+=" ":n+="♠":n+="{"
+break
+case 125:r==CPATASCII?n+="↖":n+="}"
+break
+case 126:r==JISX0201?n+="‾":r==CPATASCII?n+="◀":n+="~"
+break
+case 127:r!=JISX0201?n+=r[0]:n+=String.fromCharCode(a+t[s])
+break
+default:!a&&0<=t[s]&&t[s]<32?n+=i[t[s]]:n+=String.fromCharCode(a+t[s])}else n+=r[t[s]-127]}return n}function decAnsi(t,r,e,i,n){return decEncoding(X.readBytes(t,r),e,i,n)}function isWithin(t,r,e){return r<=t&&t<=e}function isInside(t,r,e){return r<t&&t<e}function isWithinRanges(t,r){if(!isNaN(t)&&Array.isArray(r)){for(var e=0,i=!1;e<r.length;e++)if(Array.isArray(r[e])){if(!r[e].length)return
+if(1<r[e].length){if(r[e][0]<=t&&t<=r[e][1]){i=!0
+break}}else if(t===r[e][0]){i=!0
+break}}else if(t===r[e]){i=!0
+break}return i}}function Hex(t,r){if(void 0===t)return"!Hex("+t+")"
+void 0===r&&(r=2)
+var e="",t=(t<0&&(t=-t,e="-"),t.toString(16).toUpperCase()),i=""
+return e+(i=t.length<r?Array(1+r-t.length).join("0"):i)+t+"h"}function Bin(t,r){if(void 0===t)return"!Bin("+t+")"
+void 0===r&&(r=4)
+var e="",t=(t<0&&(t=-t,e="-"),t.toString(2)),i=""
+return e+(i=t.length<r?Array(1+r-t.length).join("0"):i)+t+"b"}function Oct(t,r){if(void 0===t)return"!Oct("+t+")"
+void 0===r&&(r=3)
+var e="",t=(t<0&&(t=-t,e="-"),t.toString(8)),i=""
+return e+(i=t.length<r?Array(1+r-t.length).join("0"):i)+t+"o"}function readVarUInt(t){if(t<0||t>=File.getSize())return[0,0]
+for(var r=0,e=1,i=1,n=t,s=X.U8(n++),r=r<<7|127&s,a=s;a;)a>>=1,e++
+for(;i<16&&128&s;i++)r=r<<7|127&(s=X.U8(n++))
+return 64<e?[0,0x10000000000000000]:128&s?[0,-1]:[i,r]}function readFloat80(t,r){var e=[]
+if((r=r!=_BE?_LE:r)==_LE)for(var i=0;i<10;i++)e[i]=X.U8(t+i)
+else for(i=0;i<10;i++)e[9-i]=X.U8(t+i)
+for(var n=0,i=0;i<8;i++)n+=e[i]*Math.pow(256,i)
+var r=e[8]+(e[9]<<8),s=32768&r?-1:1,r=32767&r
+return 0==r&&0===n?0:32767==r?0===n?1/0*s:NaN:(r=r-16383,s*(Math.floor(n/Math.pow(2,63))+n%Math.pow(2,63)/Math.pow(2,63))*Math.pow(2,r))}function BitReader(t,r){this.n=0,this.buf=0,this.offset=t||0,this.endian=r||_LE,this.init=function(t){this.ofs=t||0,this.n=this.buf=0},this.read=function(t){if((t=64<t?64:t)<0)return 0
+if(this.endian===_LE){for(;this.n<t;)this.buf|=Util.shlu64(File.read_uint8(this.offset++),this.n),this.n+=8
+var r=this.buf&Util.shlu64(1,t)-1
+this.buf=Util.shru64(this.buf,t)}else{for(;this.n<t;)this.buf=Util.shlu64(this.buf,8)|File.read_uint8(this.offset++),this.n+=8
+r=Util.shru64(this.buf,this.n-t)
+this.buf&=Util.shru64(Util.shlu64(1,this.n)-1,t)}return this.n-=t,r},this.consume=function(t){this.offset+=t},this.seek=function(t){this.offset=t},this.bseek=function(t){this.offset=t-t%8,this.buf=this.n=0,this.read(t%8)}}function bitCount(t){var r=0
+for(t=!!t;t;)1&t&&r++,t>>=1
+return r}function firstNotOf(t,r,e){if(t+r>X.Sz())return-1
+i=0
+if(Array.isArray(e)){for(i=0;i<e.length&&!("number"!=typeof e[i]||e[i]<0||e[i]%1!=0);i++);if(i<e.length)throw new Error("firstNotOf cannot parse: "+outArray(e))}else e="number"==typeof e&&0<e&&e%1==0||"string"==typeof e?[e]:[0]
+for(r=Math.min(r,X.Sz()-t),i=0;i<r&&e.includes(X.U8(t+i));i++);return i<r?t+i:-1}function isAllZeroes(t,r){return firstNotOf(t,r)<0}function addEllipsis(t,r,e){if(e=e||78,t.length<(r=r||160)||r<e)return t.trim()
+for(var i=" .,:;!\\/'\"=&\t\r\n&。、｡,，・",n=r,s=0,a=-1;e<=n&&s<2;){if(0<=i.indexOf(t[n])){for(s++;0<=i.indexOf(t[n]);)n--
+a<0&&(a=n+1)}for(;i.indexOf(t[n])<0&&0<=n;)n--}return n<e&&s<2||!s?t.slice(0,r)+"…":t.slice(0,Math.max(a),e)+"…"}function sOptionT(t,r,e,i){void 0===r&&(r=""),void 0===e&&(e=""),void 0===i&&(i=", "),""!=(""+t).trim()&&(sOptions=sOptions.appendS(r+(""+t).trim()+e,i))}function sOption(t,r,e){void 0===r&&(r=""),void 0===e&&(e=""),"undefined"==typeof sep&&(sep=", "),""+t!=""&&(sOptions=sOptions.appendS(r+""+t+e,sep))}function outSz(){if(!arguments.length||void 0===arguments[0])return"?"
+var t=[],r=[]
+for(i=0;i<arguments.length;i++)0<=arguments[i]?(!r.length||r.indexOf(arguments[i])<0)&&(r.push(arguments[i]),t.push(arguments[i]<X.Sz()?arguments[i]+"(+"+(X.Sz()-arguments[i])+")":arguments[i]>X.Sz()?arguments[i]+"(-"+(arguments[i]-X.Sz())+"!)":arguments[i])):t.push("?")
+return t.join("/")}function outArray(t,r,e){if("number"==typeof r&&r%1==0||(r=10),("number"!=typeof e||e%1!=0)&&void 0===e)switch(r){case 8:e=3
+break
+case 16:e=2
+break
+case 2:e=4
+break
+default:e=0}if("number"==typeof t)return t.toString(r).toUpperCase().padStart(e,"0")
+if("string"==typeof t)return'"'+t+'"'
+for(var i=0,n=[];i<t.length;i++)Array.isArray(t[i])?n.push(outArray(t[i],r,e)):"number"==typeof t[i]&&t[i]%1==0?n.push(t[i].toString(r).toUpperCase().padStart(e,"0")):"string"==typeof t[i]?n.push('"'+t[i]+'"'):n.push(t[i])
+return"["+n.join(", ")+"]"}function extIs(t){return File.getFileSuffix().toLowerCase()==t.toLowerCase()}function slashTag(t,r){return t==r||""!=t&&""==r?t:""==t&&""!=r?r:""!=t&&""!=r?t+"/"+r:""}function createOrderlyHuffmanTable(t,r,e){var n=32,s=reall=code=0,a=[],o=[],f=[],h=[]
+for(i=0;i<33;i++)o[i]=65535
+for(i=0;i<r;i++)(len=t[i])&&(len<n&&(n=len),len>s&&(s=len),65535==o[len]?o[len]=f[len]=i:(h[f[len]]=i,f[len]=i),reall++)
+if(!s)return!1
+for(d=n;d<=s;d++)for(65535!=o[d]&&(h[f[d]]=r),i=o[d];i<r;i=h[i]){for(var l=0,u=a.length,c=d;0<=c;c--){var p=c&&code>>s-d>>c-1&1?1:0
+if(l!=u){if(!c||!a[l][0]&&!a[l][1])return!1
+a[l][p]?l=a[l][p]:a[l][p]=l=u}else a.push([c&&!p?u+1:0,c&&p?u+1:0,c?0:i]),l++,u++}code+=1<<s-d}return a}function secondsToTimeStr(t){var r=[315581497635,3155814976,31558150,2629846,604800,86400,3600,60],e="",i=t%r[7],n=Util.div64(t%r[6],r[7]),s=Util.div64(t%r[5],r[6]),a=Util.div64(t%r[4],r[5]),o=Util.div64(t%r[3],r[4]),f=Util.div64(t%r[2],r[3]),h=Util.div64(t%r[1],r[2]),l=Util.div64(t%r[0],r[1]),r=Util.div64(t,r[0])
+return t<86400?(e=n.padStart(2,"0")+":"+i.padStart(2,"0"),s?s+":"+e:e):(i&&(e=i+"s"+e),n&&(e=n+"m"+e),s&&(e=s+"h"+e),a&&(e=a+"d"+e),o&&(e=o+"w"+e),f&&(e=f+"M"+e),h&&(e=h+"Y"+e),l&&(e=l+"C"+e),r?r+"Mil"+e:e)}function charStat(){if(!arguments.length)return"?"
+if(void 0===arguments[0]||"number"==typeof arguments[0])return"?"
+if(str=arguments[0],needall=!(arguments.length<2||!arguments[1]),""==str||str==[])return"empty"
+var t,e=[],i=[0,0,0,0,0,0,0],n=[0,0,0,0,0,0,0,0]
+if("string"==typeof str)for(t=0;t<str.length;t++)e.push(str.charCodeAt(t))
+else e=str
+for(t=0;t<e.length;t++)e[t]?9==e[t]?(i[1]++,i[3]++,i[5]++,i[6]++):10==e[t]||13==e[t]?(i[3]++,i[5]++,i[6]++):14==e[t]?(i[3]++,i[5]++):e[t]<=31||127==e[t]?i[5]++:32==e[t]?(i[1]++,i[2]++,i[3]++,i[4]++,i[6]++):43<=e[t]&&e[t]<=45||48<=e[t]&&e[t]<=57?(i[2]++,i[3]++,i[4]++,i[6]++):e[t]<=126?(i[2]++,i[3]++):255==e[t]?(i[3]++,i[6]++):127<e[t]&&i[6]++:(i[0]++,i[3]++,i[5]++,i[6]++)
+for(t=0;t<i.length;t++)n[t]=Util.div64(100*i[t],e.length)
+return r="",needall?(70<n[0]&&(100===n[0]&&(r+="all"),r+="00"),70<n[1]&&(100===n[1]&&(r+="all"),r+="t "),70<n[4]&&(100===n[4]&&(r+="all"),r+="num"),70<n[2]&&(100===n[2]&&(r+="all"),r+="asc"),70<n[3]&&(100===n[3]&&(r+="all"),r+="xsc"),70<n[5]&&(100===n[5]&&(r+="all"),r+="ctl"),70<n[6]&&(100===n[6]&&(r+="all"),r+="foreign")):70<n[0]?(100===n[0]&&(r+="all"),r+="00"):70<n[1]?(100===n[1]&&(r+="all"),r+="t "):70<n[4]?(100===n[4]&&(r+="all"),r+="num"):70<n[2]?(100===n[2]&&(r+="all"),r+="asc"):70<n[3]?(100===n[3]&&(r+="all"),r+="xsc"):70<n[5]?(100===n[5]&&(r+="all"),r+="ctl"):70<n[6]&&(100===n[6]&&(r+="all"),r+="foreign"),""==r?"any"+n:r}_BE=!0,FINT_QUICK=FINT_FAST=FINT_1=FXSEC1=!(CS_BEST=!(CS_ALL=!(_LE=!1))),TOEOF=-1,CP437="⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ",CP866="⌂АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмноп░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀рстуфхцчшщъыьэюяЁёЄєЇїЎў°∙·√№¤■ ",CP1251="⌂ЂЃ‚ѓ„…†‡€‰Љ‹ЊЌЋЏђ‘’“”•–—・™љ›њќћџ ЎўЈ¤Ґ¦§Ё©Є«¬­®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя",CP1252="⌂€・‚ƒ„…†‡ˆ‰Š‹Œ・Ž・・‘’“”•–—˜™š›œ・žŸ ¡¢£¤¥¦§¨©ª«¬・®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ",KOI8R="⌂─│┌┐└┘├┤┬┴┼▀▄█▌▐░▒▓⌠■∙√≈≤≥ ⌡°²·÷═║╒ё╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡Ё╢╣╤╥╦╧╨╩╪╫╬©юабцдефгхийклмнопярстужвьызшэщчъЮАБЦДЕФГХИЙКЛМНОПЯРСТУЖВЬЫЗШЭЩЧЪ",JISX0201="⌂→-‚ƒ„…†‡ˆ‰Š‹Œ↑Ž³™‘’“”•–—˜™š›œ¢žŸ→｡｢｣､･ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝﾞﾟàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ",CPAmiga="⫽абвгдежзийклмнопрстуфхцчшщъыьэюя ¡¢£¤¥¦§¨©ª«¬–®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ",CPRISCOS="⌂€Ŵŵ◰﯀Ŷŷ�⇦⇨⇩⇧…™‰•‘’‹›“”„–—−Œœ†‡ﬁﬂ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ",CPATASCII=["▶","🖤","├","▊","┘","┤","┐","╱","╲","◤","▛","◥","▙","▟","▆","￣","▜","♣","┌","─","┼","◘","▀","▐","┬","┴","▐","└","\n","↑","↓","←","→","█","！","”","＃","＄","％","＆","’","（","）","＊","＋","，","ー","．","/","𝟶","𝟷","𝟸","𝟹","𝟺","𝟻","𝟼","𝟽","𝟾","𝟿","：","；","＜","＝","＞","？","＠","𝙰","𝙱","𝙲","𝙳","𝙴","𝙵","𝙶","𝙷","𝙸","𝙹","𝙺","𝙻","𝙼","𝙽","𝙾","𝙿","𝚀","𝚁","𝚂","𝚃","𝚄","𝚅","𝚆","𝚇","𝚈","𝚉","【","\\","】","＾","＿","♦","𝚊","𝚋","𝚌","𝚍","𝚎","𝚏","𝚐","𝚑","𝚒","𝚓","𝚔","𝚕","𝚖","𝚗","𝚘","𝚙","𝚚","𝚛","𝚜","𝚝","𝚞","𝚟","𝚠","𝚡","𝚢","𝚣","♠","-","↰","◁","▷"],CPAtariST="⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥ßƒáíóúñÑªº¿⌐¬½¼¡«»ãõØøœŒÀÃÕ¨´†¶©®™ĳĲאבגדהוזחטיכלמנסעפצקרשתןךםףץ§∧∞αβΓπΣσµτΦΘΩδ∮φ∈∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²³¯",CPFullCPETshifted=["\0","","_","⛔️","","⚪","","🔔","⇪","\t","\n","↘","⇪","\r","↘️","💥","","⬇️","↩️","⇱","⌫","🗑️","🗯️","","⇆","↟","?","⎋","🟥","➡️","🟩","🟦"," ","!",'"',"#","$","%","&","'","(",")","*","+",",","-",".","/","0","1","2","3","4","5","6","7","8","9",":",";","<","=",">","?","@","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","[","\\","]","↑","←"," ","!",'"',"#","$","%","&","'","(",")","*","+",",","-",".","/","0","1","2","3","4","5","6","7","8","9",":",";","<","=",">","▧","","🟣","💥","🚀","🕶️","[F1]","[F3]","[F5]","[F7]","[F2]","[F4]","[F6]","[F8]","↵","⇪","🕶️","⬛️","⬆️","↪️","🗑","🗯","🟫","🌸","🧪","⚫️","🟢","🔷","🔳","🟪","⬅️","🟨","🧪"," ","▌","▄","▔","▁","▏","░","▕","▄","▒","▕","├","▗","└","┐","▂","┌","┴","┬","┤","▎","▍","▕","▔","▔","▃","✓","▖","▝","┘","▘","▚","─","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","┼","▏","│","▓","█"," ","▌","▄","▔","▁","▏","░","▕","▄","▒","▕","├","▗","└","┐","▂","┌","┴","┬","┤","▎","▍","▕","▔","▔","▃","✓","▖","▝","┘","▘","▚"],CPSpeccy=["©","  "," ▀","▀ ","▀▀"," ▄"," █","▀▄","▄█","▄ ","▄▀","█ ","█▀","▄▄","▄█","█▄","██","𝘼","𝘽","𝘾","𝘿","𝙀","𝙁","𝙂","𝙃","𝙄","𝙅","𝙆","𝙇","𝙈","𝙉","𝙊","𝙋","𝙌","𝙍","𝙎","𝚉𝚇¹²⁸","⏯︎","𝚁𝙽𝙳","𝙸𝙽𝙺𝙴𝚈$","π","𝙵𝙽 ","𝙿𝙾𝙸𝙽𝚃 ","𝚂𝙲𝚁𝙴𝙴𝙽$ ","𝙰𝚃𝚃𝚁 ","𝙰𝚃 ","𝚃𝙰𝙱 ","𝚅𝙰𝙻$ ","𝙲𝙾𝙳𝙴","𝚅𝙰𝙻 ","𝙻𝙴𝙽 ","𝚂𝙸𝙽 ","𝙲𝙾𝚂 ","𝚃𝙰𝙽 ","𝙰𝚂𝙽 ","𝙰𝙲𝚂 ","𝙰𝚃𝙽 ","𝙻𝙽 ","𝙴𝚇𝙿 ","𝙸𝙽𝚃 ","𝚂𝚀𝚁 ","𝚂𝙶𝙽 ","𝙰𝙱𝚂 ","𝙿𝙴𝙴𝙺 ","𝙸𝙽 ","𝚄𝚂𝚁 ","𝚂𝚃𝚁$ ","𝙲𝙷𝚁$ ","𝙽𝙾𝚃 ","𝙱𝙸𝙽 ","𝙾𝚁 ","𝙰𝙽𝙳 ","≤","≥","≠","𝙻𝙸𝙽𝙴 ","𝚃𝙷𝙴𝙽 ","𝚃𝙾 ","𝚂𝚃𝙴𝙿 ","𝙳𝙴𝙵 𝙵𝙽 ","𝙲𝙰𝚃 ","𝙵𝙾𝚁𝙼𝙰𝚃 ","𝙼𝙾𝚅𝙴 ","𝙴𝚁𝙰𝚂𝙴 ","𝙾𝙿𝙴𝙽 # ","𝙲𝙻𝙾𝚂𝙴 # ","𝙼𝙴𝚁𝙶𝙴 ","𝚅𝙴𝚁𝙸𝙵𝚈 ","𝙱𝙴𝙴𝙿 ","𝙲𝙸𝚁𝙲𝙻𝙴 ","𝙸𝙽𝙺 ","𝙿𝙰𝙿𝙴𝚁 ","𝙵𝙻𝙰𝚂𝙷 ","𝙱𝚁𝙸𝙶𝙷𝚃 ","𝙸𝙽𝚅𝙴𝚁𝚂𝙴 ","𝙾𝚅𝙴𝚁 ","𝙾𝚄𝚃 ","𝙻𝙿𝚁𝙸𝙽𝚃 ","𝙻𝙻𝙸𝚂𝚃 ","𝚂𝚃𝙾𝙿 ","𝚁𝙴𝙰𝙳 ","𝙳𝙰𝚃𝙰 ","𝚁𝙴𝚂𝚃𝙾𝚁𝙴 ","𝙽𝙴𝚆 ","𝙱𝙾𝚁𝙳𝙴𝚁 ","𝙲𝙾𝙽𝚃𝙸𝙽𝚄𝙴 ","𝙳𝙸𝙼 ","𝚁𝙴𝙼 ","𝙵𝙾𝚁 ","𝙶𝙾 𝚃𝙾 ","𝙶𝙾 𝚂𝚄𝙱 ","𝙸𝙽𝙿𝚄𝚃 ","𝙻𝙾𝙰𝙳 ","𝙻𝙸𝚂𝚃 ","𝙻𝙴𝚃 ","𝙿𝙰𝚄𝚂𝙴 ","𝙽𝙴𝚇𝚃 ","𝙿𝙾𝙺𝙴 ","𝙿𝚁𝙸𝙽𝚃 ","𝙿𝙻𝙾𝚃 ","𝚁𝚄𝙽 ","𝚂𝙰𝚅𝙴 ","𝚁𝙰𝙽𝙳𝙾𝙼𝙸𝚉𝙴 ","𝙸𝙵 ","𝙲𝙻𝚂","𝙳𝚁𝙰𝚆 ","𝙲𝙻𝙴𝙰𝚁 ","𝚁𝙴𝚃𝚄𝚁𝙽","𝙲𝙾𝙿𝚈"],Chars0to1F="・☺☻♥♦♣♠•◘○◙♂♀♪♫☼▶◀↕‼¶§▬↨↑↓→←∟↔▲▼",Chars0to1FLF="・☺☻♥♦♣♠•◘○\n♂♀♪♫☼▶◀↕‼¶§▬↨↑↓→←∟↔▲▼",Chars0to1FCRLF="・☺☻♥♦♣♠•◘○\n♂♀\r♫☼▶◀↕‼¶§▬↨↑↓→←∟↔▲▼",Chars0to1FSpeccy="\0，📝︎///⬅➡⬇⬆⌫\n№",Chars0to1FATASCII="♥├◨┘┤┐／╲◢▗◣▝▘￣▂▖♣┌─┼•▄▎┬┴▌└␛↑↓←→",Chars0to1FATASCII2="áùÑÉçôòì£ïüäöúóöÜâûîéèñêȧàȦ␛↑↓←→",Chars0to1FATASCII_PL="ŹąźćŚėöÖ£üßŁłŃÓ√ĘśäÜĆĄŻÄż␛↑↓←→",Chars0to1FAtariX="áùÑÉçôòì£ïüäÖúóöÜâûîéèñêȧàȦË↑↓←→",Chars0to1FPETSCII="\0_⛔️⚪🔔⇪\t\n↘⇪\r↘️💥↓🔲⇱⌫🗑️🗯️⇆↟?⎋🟥→🟩🟦"
+var patcheddata=[]
+function rpU8(t){for(var r=0;r<patcheddata.length;r++)if(patcheddata[r][0]==t)return patcheddata[r][1]
+return X.U8(t)}function rpU16be(t){return rpU8(t)<<8|rpU8(t+1)}function rpU32be(t){return rpU8(t)<<24|rpU8(t+1)<<16|rpU8(t+2)<<8|rpU8(t+3)}function wpU8(t,r){for(var e=0;e<patcheddata.length;e++)if(patcheddata[e][0]==t)return void(patcheddata[e][1]=r)
+patcheddata.push([t,r])}function wpU16be(t,r){wpU8(t,r>>8&255),wpU8(t+1,255&r)}function wpU32be(t,r){wpU8(t,r>>24&255),wpU8(t+1,r>>16&255),wpU8(t+2,r>>8&255),wpU8(t+3,255&r)}function patchLength(){return patcheddata.length}function patchClear(){patcheddata=[]}function findGaps(r,e){var i=[]
+if(Array.isArray(r)&&!(r.length<2)){for(s=0;s<r.length;s++)if(!Array.isArray(r[s])||2!=r[s].length||"number"!=typeof r[s][0]||"number"!=typeof r[s][1])return i
+"number"!=typeof e&&(e=1)
+for(var n=r.sort(function(t,r){return t[0]!=r[0]?t[0]-r[0]:t[1]-r[1]}),s=1;s<n.length;s++)(t=n[s-1][0]+n[s-1][1])<n[s][0]&&0<=n[s][0]-t-e&&i.push([t,n[s][0]-t])}return i}function findIntersections(t,r){var e,i=[]
+if(!Array.isArray(t)||t.length<2)return i
+for(o=0;o<t.length;o++)if(!Array.isArray(t[o])||2!=t[o].length||"number"!=typeof t[o][0]||"number"!=typeof t[o][1])return i
+function n(t,r){return t[0]!=r[0]?t[0]-r[0]:t[1]-r[1]}for(var s=t.sort(n),a=!1,o=1;o<s.length&&!a;o++)for(j=0;j<o&&!a;j++)(e=s[j][0]+s[j][1])>s[o][0]&&(r&&(a=!0),i.push([s[o][0],s[o][0]+s[o][1]<=e?s[o][1]:e-s[o][0]]))
+return i.sort(n)}function findMultiple(t,r,e,n){var s,a=e||[],o=ofs0=t||0,f=Math.min(X.Sz(),o+(r||0)),h=n||1
+if(!a.length)return-1
+for(i=0;i<a.length&&o<=f;i++){if(f<=o)return-1
+if((s=X.fSig(o,a[i][1],a[i][0]))<0){if(!h)return-1
+o=ofs0+=h,i=-1}else o=s+a[i][1],i||(ofs0=s)}return ofs0}function funSampleName(t,r){var e=1,i=0
+return""!=(t=t.toString()).trim()&&((t.endsWithCI(".wav")||t.endsWithCI(".smp")||t.endsWithCI(".ins")||t.endsWithCI(".iff"))&&i++,(t.startsWithCI("ST-")||t.startsWithCI("df0:"))&&i++,/^\d+$/.test(t)&&i++,t.startsWith("#")&&(e+=5),(/^\s*(unnamed|dr[u]?m\d*|loop\s*\d*|strings?\s*\d*|bass\s*\d*|guitar\s*\d*|snare\s*\d*|piano)\s*$/i.test(t)||/^\s*(trumpet\s*\d*|bells\s*|synth\s*[0-9iv]*|shaker|banjo|lead|syn\d+|\w*\s*hihat|organ\s*\d*)\s*$/i.test(t)||/^\s*(voice\s*\d+|crash|cymbal\s*\d*|wonderpad\s*[0-9iv]+|tambourine\s*[0-9iv]*|tamb\d+)\s*$/i.test(t)||/^\s*((hard|echo)\s?tom|splash|cymbhit|orchm(in|aj)|orch\s?hit|chimes?|kick|scratch)\s*$/i.test(t)||/^\s*((ghost\s?|brass\s?)pad\s*(min|maj|\(sus4\))?|blip|bleep|hhc|hho|clv|bd|sd|pad)\s*$/i.test(t)||/^\s*(m(aj|in)or\s*[0-9iv]*|sawsynth|synbrass|hihat\sclosed)\s*$/i.test(t))&&i++,i<e)}var b64Chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+function toBase64(t){for(var r,e,i="",n=0,s=t.length-t.length%3,n=0;n<s;n+=3)i=(i=(i=(i+=b64Chars[t[n]>>2])+b64Chars[(3&t[n])<<4|(240&t[n+1])>>4])+b64Chars[(15&t[n+1])<<2|(192&t[n+2])>>6])+b64Chars[63&t[n+2]]
+return n<t.length&&(r=t[n],e=n+1<t.length?t[n+1]:0,i=(i=(i+=b64Chars[r>>2])+b64Chars[(3&r)<<4|(240&e)>>4])+(n+1<t.length?b64Chars[(15&e)<<2]:"=")+"="),i}function compareArrays(t,r){var e=Math.min(t.length,r.length)
+if(t.length+r.length!=0){if(0==e||t.length!=r.length)return!1
+for(var i=0;i<e;++i)if(Array.isArray(t[i])){if(!Array.isArray(r[i]))return!1
+if(!compareArrays(t[i],r[i]))return!1}else{if(Array.isArray(r[i]))return!1
+if(t[i]!==r[i])return!1}}return!0}function _logBase64(t){var r=File.getFileBaseName()+"."+File.getFileCompleteSuffix()
+_log('MIME-Version: 1.0\nContent-Type: application/octet-stream; name="'+r+'.dec"\nContent-Transfer-Encoding: base64\nContent-Disposition: attachment; filename="'+r+'.dec"\n'),_log(t)}function _logHex(t){var r=""
+for(i=0;i<t.length;i++)i%16||(r+=(i?"  |\n":"")+i.toString(16).padStart(6,"0")+" |"),i%8||(r+=" "),r+=" "+t[i].toString(16).padStart(2,"0")
+_log("-8<---"),_log(r),_log("---\x3e8-")}function _logText(t){if(_log("-8<---["+typeof t+" "+t.length+" bytes]---"),"object"==typeof t)for(var r=t,e=0;e<t.length;e++)0==r[e]&&(r[e]=32)
+_log(decEncoding(void 0===t?X.readBytes(0,X.Sz(),!0):r,CP866,Chars0to1F)),_log("---\x3e8-")}function _l2r(t,r,e){_setResult("debug",e,"@"+Hex(r),t)}function _currentLine(){var t=(new Error).stack.split("\n")[1].match(/:(\d+)?$/)
+return t?parseInt(t[1],10):null}function _logIt(t){void 0===t&&(t="")
+var r=(new Error).stack.split("\n")[1]||"",e=r.match(/^(\w+)@/),e=e?e[1]:"<anon>",r=r.match(/:(\d+)(?!.*:)/),r=r?r[1]:"?"
+_log(e+("?"==r?"":": "+r)+(t.length?": "+t:""))}function CheckpointTimer(){this.last=0,this.min=100,this.init=function(t){this.last=(new Date).getTime(),"number"==typeof t&&0<=t&&(this.min=t)},this.next=function(t){var r=(new Date).getTime(),e=r-this.last
+e>=this.min&&_setResult("prof",t,"",e+" ms passed. "+(X.isOverlay()?" overlay":"")+(X.isResource()?" resource":"")+(X.isFilePart()?" file_part":"")+" Hex at [0]: "+X.getSignature(0,32)),this.last=r}}

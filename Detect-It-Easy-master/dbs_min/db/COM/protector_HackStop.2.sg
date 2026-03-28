@@ -1,0 +1,1 @@
+function detect(){return Binary.compare("fabe....ffe6")?(sVersion="1.17cr",bDetected=1):Binary.compare("fabd....ffe5")?(sVersion="1.13cs",bDetected=1):Binary.compare("fabb....ffe3")&&(sVersion="1.14s",bDetected=1),result()}meta("protector","HackStop")

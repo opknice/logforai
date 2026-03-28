@@ -1,0 +1,1 @@
+function detect(){return PE.isLibraryPresentExp(/rnnoise/i)||PE.isFunctionPresent("rnnoise_init")?bDetected=1:PE.isExportFunctionPresentExp(/^rnnoise_/)&&(sOptions="static",bDetected=1),result()}meta("library","RNNoise Noise Suppressor")
