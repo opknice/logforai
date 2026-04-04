@@ -1,1 +1,0 @@
-function detect(){return Binary.compare("'=SYRIUS=DIRE=SERVICE='071a")&&(bDetected=1),result()}meta("protector","SelfProtect386")

@@ -1,1 +1,0 @@
-function detect(){return Binary.compare("'FLDB'",20)&&(bDetected=1),result()}meta("format","Becker file location databases")

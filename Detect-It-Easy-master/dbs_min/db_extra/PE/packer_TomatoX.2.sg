@@ -1,1 +1,0 @@
-function detect(){return PE.isSectionNamePresent(".tomato")&&(bDetected=1),result()}meta("packer","TomatoX")

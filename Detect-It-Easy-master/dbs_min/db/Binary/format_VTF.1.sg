@@ -1,1 +1,0 @@
-function detect(){return Binary.compare("'VTF'0007000000")&&(bDetected=1),result()}meta("format","Valve Texture")

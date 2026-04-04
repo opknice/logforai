@@ -60,7 +60,19 @@ sub new {
 	my $self = $class->SUPER::new();
 
 	$self->{packet_list} = {
-		'0069' => ['account_server_info', 'v a4 a4 a4 a4 a26 C a*', [qw(len sessionID accountID sessionID2 lastLoginIP lastLoginTime accountSex serverInfo)]],
+		'0AC4' => ['account_server_info','v a4 a4 a4 x30 C Z16 a4 v', [qw(len sessionID accountID sessionID2 serverCount authToken serverIP serverPort)]],
+		'0B72' => ['received_characters','v a*', [qw(len totalSlot premiumStart premiumEnd charInfo)]],
+ 		'0AC5' => ['char_login_ok','a4 Z16 a4 v', [qw(charID mapName mapServerIP mapServerPort)]],
+		'AC5B' => ['account_id', 'a4', [qw(accountID)]],
+		#'0AC4' => ['account_server_info','v a4 a4 a4 a4 a26 C a*', [qw(len sessionID accountID sessionID2 lastLoginIP lastLoginTime accountSex serverInfo)]],
+		#'0AC5' => ['map_server_info','a4 Z16 a4 v', [qw(charID mapName mapIP mapPort)]],
+		# struct ใหม่ที่อิง Raw Packet จริง
+		#'0AC5' => ['map_server_info', 'a4 Z16 a4 v', [qw(charID mapName mapIP mapPort)]],
+		#'0AC4' => ['character_server_info', 'x4 a4 v Z20 v3 a128', [qw(ip port name users state property ip_port)]],
+		# 0B72 handled above by 'received_characters'
+		#'0AC5' => ['map_server_info', 'x4 a4 v Z20 v3 a128', [qw(ip port name users state property ip_port)]], # IGNORE
+		# 0436 is C->S map_login (send only) - not a receive packet
+		#'0069' => ['account_server_info', 'v a4 a4 a4 a4 a26 C a*', [qw(len sessionID accountID sessionID2 lastLoginIP lastLoginTime accountSex serverInfo)]],
 		'006A' => ['login_error', 'C Z20', [qw(type date)]],
 		# '006B' => ['received_characters_info', 'v x20 a*', [qw(len charInfo)]], # not used in official server
 		'006B' => ['received_characters_info', 'v C3 x20 a*', [qw(len total_slot premium_start_slot premium_end_slot charInfo)]], # last known struct
@@ -521,7 +533,7 @@ sub new {
 		'0828' => ['char_delete2_result', 'a4 V2', [qw(charID result deleteDate)]], # 14
 		'082A' => ['char_delete2_accept_result', 'V V', [qw(charID result)]], # 10
 		'082C' => ['char_delete2_cancel_result', 'a4 V', [qw(charID result)]], # 14
-		'082D' => ['received_characters_info', 'v C5 x20', [qw(len normal_slot premium_slot billing_slot producible_slot valid_slot)]],
+		'082D' => ['received_characters_info', 'v C4 x21 a*', [qw(len)]], # รายการตัวละครรุ่นปี 2013 [7, 1]
 		'0836' => ['search_store_result', 'v C3 a*', [qw(len first_page has_next remaining storeInfo)]],
 		'0837' => ['search_store_fail', 'C', [qw(reason)]],
 		'0839' => ['guild_expulsion', 'Z24 Z40', [qw(name message)]],
@@ -708,8 +720,8 @@ sub new {
 		'0ABD' => ['partylv_info', 'a4 v2', [qw(ID job lv)]],
 		'0ABE' => ['warp_portal_list', 'v2 Z16 Z16 Z16 Z16', [qw(len type memo1 memo2 memo3 memo4)]], #TODO : MapsCount || size is -1
 		'0AC2' => ['rodex_mail_list', 'v C a*', [qw(len isEnd mailList)]],   # -1
-		'0AC4' => ['account_server_info', 'v a4 a4 a4 a4 a26 C x17 a*', [qw(len sessionID accountID sessionID2 lastLoginIP lastLoginTime accountSex serverInfo)]],
-		'0AC5' => ['received_character_ID_and_Map', 'a4 Z16 a4 v a128', [qw(charID mapName mapIP mapPort mapUrl)]],
+		#'0AC4' => ['account_server_info', 'v a4 a4 a4 a4 a26 C x17 a*', [qw(len sessionID accountID sessionID2 lastLoginIP lastLoginTime accountSex serverInfo)]],
+		#'0AC5' => ['received_character_ID_and_Map', 'a4 Z16 a4 v a128', [qw(charID mapName mapIP mapPort mapUrl)]],
 		'0AC7' => ['map_changed', 'Z16 v2 a4 v a128', [qw(map x y IP port url)]], # 156
 		'0AC9' => ['account_server_info', 'v a4 a4 a4 a4 a26 C a6 a*', [qw(len sessionID accountID sessionID2 lastLoginIP lastLoginTime accountSex unknown serverInfo)]],
 		'0ACA' => ['errors', 'C', [qw(type)]],
@@ -759,7 +771,7 @@ sub new {
 		'0B60' => ['account_server_info', 'v a4 a4 a4 a4 a26 C x17 a*', [qw(len sessionID accountID sessionID2 lastLoginIP lastLoginTime accountSex serverInfo)]],
         '0B62' => ['vender_items_list', 'v a4 a4 C V a*', [qw(len venderID venderCID flag expireDate itemList)]], #-1
 		'0B6F' => ['character_creation_successful', 'a*', [qw(charInfo)]],
-		'0B72' => ['received_characters', 'v a*', [qw(len charInfo)]],
+		#0B72' => ['received_characters', 'v a*', [qw(len charInfo)]],
 		'0B73' => ['revolving_entity', 'a4 v', [qw(sourceID entity)]],
 		'0B76' => ['homunculus_property', 'Z24 C v11 V6 v2', [qw(name state level hunger intimacy atk matk hit critical def mdef flee aspd hp hp_max sp sp_max exp exp_max points_skill attack_range)]],
 		'0B77' => ['npc_store_info', 'v a*', [qw(len itemList)]],#-1
@@ -1609,9 +1621,155 @@ sub senbei_amount {
 	$char->{senbei} = $args->{senbei};
 }
 
-*changeToInGameState = *Network::Receive::changeToInGameState;
+sub account_server_info {
+    my ($self, $args) = @_;
+    
+    # บันทึกข้อมูล Session เพื่อใช้ใน Phase 4
+    $accountID  = $args->{accountID};
+    $sessionID  = $args->{sessionID};
+    $sessionID2 = $args->{sessionID2};
+    $accountSex = $args->{accountSex} // 1;
 
+    message sprintf("Login OK — AccountID: %d\n",
+        unpack('V', $args->{accountID})), "connection";
+
+    # อัพเดต state แต่ไม่ส่ง packet ใด — Client จัดการเอง
+    $self->{net}->setState(Network::CONNECTED_TO_CHAR_SERVER);
+    # ❌ ลบ $messageSender->sendGameLogin(...) ออก
+}
+
+sub received_characters {
+    my ($self, $args) = @_;
+    # แค่ log รายการ char ที่ได้รับ เพื่อ observe
+    message "Observed character list from server\n", "connection";
+    # ❌ ลบ $messageSender->sendCharLogin(...) ออก
+    # Client เลือก char เอง
+}
+
+sub char_login_ok {
+    my ($self, $args) = @_;
+    # บันทึกว่า Client เลือก char ไปยัง Map Server ใด
+    my $mapIP = join('.', unpack('C4', $args->{mapServerIP}));
+    $Globals::charID = $args->{charID};
+    message "Map server observed: $mapIP:$args->{mapServerPort}\n", "connection";
+    # ❌ ลบ serverConnect ออก — ใน XKore mode, Client จัดการ connection เอง
+}
+
+# sub account_server_info {
+# 	my ($self, $args) = @_;
+
+# 	# Fix #3: ใช้ $accountID ตรงๆ (import จาก use Globals)
+# 	# ไม่ใช่ $Globals::accountID ซึ่ง Perl จะสร้าง package var ใหม่แยกต่างหาก
+# 	$accountID  = $args->{accountID};
+# 	$sessionID  = $args->{sessionID};
+# 	$sessionID2 = $args->{sessionID2};
+# 	$accountSex = $args->{accountSex} // 1;
+
+# 	# Fix #5: แสดง World Name ถูกต้อง (authToken vs worldName แยกกัน)
+# 	message(sprintf(
+# 		"Account ID: %d\nSession ID: %s\nAuth Token: %s\n",
+# 		unpack('V', $args->{accountID}),
+# 		unpack('H8', $args->{sessionID}),
+# 		$args->{authToken}
+# 	), "connection");
+
+# 	# Fix #2: setState(CONNECTED_TO_CHAR_SERVER) ไม่ใช่ IN_GAME
+# 	# IN_GAME (state 5) จะทำให้ AI เริ่มทำงานและเรียก assertClass($char)
+# 	# แต่ $char ยัง undef เพราะยังไม่ได้ select character -> CRASH
+# 	$self->{net}->setState(Network::CONNECTED_TO_CHAR_SERVER);
+
+# 	# ส่ง game_login ไปยัง Char Server (packet 0065 หรือ 0275)
+# 	# $messageSender->sendGameLogin(
+# 	# 	$accountID,
+# 	# 	$sessionID,
+# 	# 	$sessionID2,
+# 	# 	$accountSex
+# 	# );
+# }
+ 
+# sub received_characters {
+# 	my ($self, $args) = @_;
+ 
+# 	my $charBlockSize = $masterServer->{charBlockSize} || 147;
+# 	my $data          = $args->{charInfo};
+# 	my @chars;
+# 	my $slot          = 0;
+ 
+# 	while (length($data) >= $charBlockSize) {
+# 		my $block = substr($data, 0, $charBlockSize, '');
+ 
+# 		my %char;
+# 		# แกะ base 116 bytes
+# 		(
+# 			$char{ID},
+# 			$char{exp},       $char{zeny},      $char{exp_job},
+# 			$char{lv_job},    $char{opt1},       $char{opt2},
+# 			$char{option},    $char{stance},     $char{manner},
+# 			$char{statPt},
+# 			$char{hp},        $char{hp_max},
+# 			$char{sp},        $char{sp_max},
+# 			$char{walk_speed},$char{jobID},      $char{hairstyle},
+# 			$char{weapon},    $char{lv},         $char{skillPt},
+# 			$char{headLow},   $char{shield},     $char{headTop},
+# 			$char{headMid},   $char{hairColor},  $char{clothColor},
+# 			$char{name},
+# 			$char{str}, $char{agi}, $char{vit},
+# 			$char{int},  $char{dex}, $char{luk},
+# 			$char{slot},
+# 			$char{renameflag},
+# 		) = unpack('a4 V9 v V2 v14 Z24 C6 v2', $block);
+ 
+# 		# แกะ extra 31 bytes (charBlockSize=147)
+# 		if ($charBlockSize >= 147) {
+# 			my $extra = substr($block, 116, 31);
+# 			(
+# 				$char{mapName},
+# 				$char{robe},
+# 				$char{deleteDate},
+# 				$char{itemSlot},
+# 				$char{charMoveAllow},
+# 			) = unpack('Z16 v V v C', $extra);
+# 		}
+ 
+# 		push @chars, \%char;
+# 	}
+ 
+# 	# เก็บลงตัวแปร Global
+# 	@Globals::chars = @chars;
+ 
+# 	# แสดงรายชื่อ character ใน console
+# 	message "Received " . scalar(@chars) . " character(s):\n", "connection";
+# 	for my $c (@chars) {
+# 		message sprintf("  Slot %d: %s  Lv.%d  Job=%d  HP=%d/%d\n",
+# 			$c->{slot}, $c->{name},
+# 			$c->{lv}, $c->{jobID},
+# 			$c->{hp}, $c->{hp_max}
+# 		), "connection";
+# 	}
+ 
+# 	# Auto-select ตาม config.txt (char=0,1,2...)
+# 	my $targetSlot = $config{char} // 0;
+# 	message "Selecting character slot $targetSlot\n", "connection";
+# 	# $messageSender->sendCharLogin($targetSlot);
+# }
+ 
+# sub char_login_ok {
+# 	my ($self, $args) = @_;
+# 	my $charID    = $args->{charID};
+# 	my $mapName   = $args->{mapName};
+# 	my $mapIP_raw = $args->{mapServerIP};
+# 	my $mapPort   = $args->{mapServerPort};
+ 
+# 	# แปลง IP bytes -> string
+# 	my $mapIP = join('.', unpack('C4', $mapIP_raw));
+ 
+# 	message "Map server: $mapIP:$mapPort  map=$mapName\n", "connection";
+ 
+# 	# เก็บ charID ไว้ใช้ต่อ
+# 	$Globals::charID = $charID;
+ 
+# 	# เชื่อมต่อ Map Server
+# 	$self->{net}->serverConnect($mapIP, $mapPort);
+# }
 
 1;
-
-

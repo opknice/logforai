@@ -1,0 +1,42 @@
+00D7FE40 | 0F1081 94070000          | movups xmm0,xmmword ptr ds:[ecx+794]    | ecx+794:NtGdiEngCheckAbort
+00D7FE47 | 8B15 B8AC2201            | mov edx,dword ptr ds:[122ACB8]          |
+00D7FE4D | 33C0                     | xor eax,eax                             |
+00D7FE4F | 0F1105 68256001          | movups xmmword ptr ds:[1602568],xmm0    | 01602568:"GhostLauncher"
+00D7FE56 | 0F1081 A4070000          | movups xmm0,xmmword ptr ds:[ecx+7A4]    | ecx+7A4:NtGdiEngComputeGlyphSet
+00D7FE5D | 0F1105 78256001          | movups xmmword ptr ds:[1602578],xmm0    |
+00D7FE64 | 0F1081 B4070000          | movups xmm0,xmmword ptr ds:[ecx+7B4]    | ecx+7B4:NtGdiEngCopyBits
+00D7FE6B | 0F1105 88256001          | movups xmmword ptr ds:[1602588],xmm0    |
+00D7FE72 | 0F1081 C4070000          | movups xmm0,xmmword ptr ds:[ecx+7C4]    | ecx+7C4:NtGdiEngCreateBitmap
+00D7FE79 | 8D4A 3F                  | lea ecx,dword ptr ds:[edx+3F]           | ecx:NtGdiDdDDILock2+C
+00D7FE7C | 0F1105 98256001          | movups xmmword ptr ds:[1602598],xmm0    |
+00D7FE83 | 81F9 68256001            | cmp ecx,rag.1602568                     | 1602568:"GhostLauncher"
+00D7FE89 | 72 2E                    | jb rag.D7FEB9                           |
+00D7FE8B | 81FA A7256001            | cmp edx,rag.16025A7                     |
+00D7FE91 | 77 26                    | ja rag.D7FEB9                           |
+00D7FE93 | 81EA 68256001            | sub edx,rag.1602568                     | 1602568:"GhostLauncher"
+00D7FE99 | 0F1F80 00000000          | nop dword ptr ds:[eax],eax              |
+00D7FEA0 | 8A8C02 68256001          | mov cl,byte ptr ds:[edx+eax+1602568]    | edx+eax*1+1602568:public: class std::_Init_locks & __thiscall std::_Init_locks::operator=(class std::_Init_locks const &)+86A0B4
+00D7FEA7 | 3088 68256001            | xor byte ptr ds:[eax+1602568],cl        | eax+1602568:"GhostLauncher"
+00D7FEAD | 40                       | inc eax                                 |
+00D7FEAE | 83F8 40                  | cmp eax,40                              | 40:'@'
+00D7FEB1 | 72 ED                    | jb rag.D7FEA0                           |
+00D7FEB3 | B8 68256001              | mov eax,rag.1602568                     | 1602568:"GhostLauncher"
+00D7FEB8 | C3                       | ret                                     |
+00D7FEB9 | 0F100A                   | movups xmm1,xmmword ptr ds:[edx]        |
+00D7FEBC | B8 68256001              | mov eax,rag.1602568                     | 1602568:"GhostLauncher"
+00D7FEC1 | 0F1005 68256001          | movups xmm0,xmmword ptr ds:[1602568]    | 01602568:"GhostLauncher"
+00D7FEC8 | 66:0FEFC8                | pxor xmm1,xmm0                          |
+00D7FECC | 0F1005 78256001          | movups xmm0,xmmword ptr ds:[1602578]    |
+00D7FED3 | 0F110D 68256001          | movups xmmword ptr ds:[1602568],xmm1    | 01602568:"GhostLauncher"
+00D7FEDA | 0F104A 10                | movups xmm1,xmmword ptr ds:[edx+10]     |
+00D7FEDE | 66:0FEFC8                | pxor xmm1,xmm0                          |
+00D7FEE2 | 0F1005 88256001          | movups xmm0,xmmword ptr ds:[1602588]    |
+00D7FEE9 | 0F110D 78256001          | movups xmmword ptr ds:[1602578],xmm1    |
+00D7FEF0 | 0F104A 20                | movups xmm1,xmmword ptr ds:[edx+20]     |
+00D7FEF4 | 66:0FEFC8                | pxor xmm1,xmm0                          |
+00D7FEF8 | 0F1005 98256001          | movups xmm0,xmmword ptr ds:[1602598]    |
+00D7FEFF | 0F110D 88256001          | movups xmmword ptr ds:[1602588],xmm1    |
+00D7FF06 | 0F104A 30                | movups xmm1,xmmword ptr ds:[edx+30]     |
+00D7FF0A | 66:0FEFC8                | pxor xmm1,xmm0                          |
+00D7FF0E | 0F110D 98256001          | movups xmmword ptr ds:[1602598],xmm1    |
+00D7FF15 | C3                       | ret                                     |

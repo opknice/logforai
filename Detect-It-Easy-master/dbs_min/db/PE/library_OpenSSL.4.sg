@@ -1,1 +1,0 @@
-function detect(){return PE.isLibraryPresentExp(/libssl|libcrypto/i)&&(bDetected=1),result()}meta("library","OpenSSL")

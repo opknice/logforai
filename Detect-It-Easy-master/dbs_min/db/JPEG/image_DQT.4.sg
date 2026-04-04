@@ -1,1 +1,0 @@
-function detect(){return bDetected=1,sOptions=Jpeg.getDqtMD5(),result()}meta("image","DQT")

@@ -1,1 +1,0 @@
-function detect(){return PE.isLibraryPresent("tbb.dll")&&(bDetected=1),result()}meta("library","Intel TBB")

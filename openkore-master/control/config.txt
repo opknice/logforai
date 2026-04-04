@@ -39,7 +39,7 @@ XKore_ID
 
 # It is not advised to set secureAdminPassword if you're using Xkore 2
 secureAdminPassword 1
-adminPassword kefropre
+adminPassword shausest
 callSign
 commandPrefix ;
 callSignGM 0
@@ -208,9 +208,9 @@ cartMaxWeight 7900
 itemsTakeGreed 0
 itemsCheckWeight 1
 
-lockMap new_1-3
-lockMap_x 83
-lockMap_y 54
+lockMap
+lockMap_x
+lockMap_y
 lockMap_randX
 lockMap_randY
 
@@ -273,7 +273,7 @@ sitAuto_sp_lower 0
 sitAuto_sp_upper 0
 sitAuto_follow 0
 sitAuto_over_50 0
-sitAuto_idle 0
+sitAuto_idle 1
 sitAuto_look
 sitAuto_look_from_wall
 sitAuto_look_delay
@@ -1023,7 +1023,7 @@ getAuto {
 debug 1
 debugPacket_unparsed 1
 debugPacket_received 1
-debugPacket_ro_sent 1
+debugPacket_ro_sent 0
 debugPacket_sent 1
 debugPacket_exclude
 debugPacket_include

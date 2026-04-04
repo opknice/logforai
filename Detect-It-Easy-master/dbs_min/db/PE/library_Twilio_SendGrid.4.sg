@@ -1,1 +1,0 @@
-function detect(){return PE.isNetObjectPresent("SendGrid")&&(bDetected=1),result()}meta("library","Twilio SendGrid")

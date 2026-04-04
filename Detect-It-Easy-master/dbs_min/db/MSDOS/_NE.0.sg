@@ -1,1 +1,0 @@
-function detect(){return MSDOS.isNE()&&(bDetected=1),result()}meta("type","NE")

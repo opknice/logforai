@@ -1,1 +1,0 @@
-function detect(){return PE.isNetObjectPresent("Snappier")&&(bDetected=1),result()}meta("library","Snappier Compression")

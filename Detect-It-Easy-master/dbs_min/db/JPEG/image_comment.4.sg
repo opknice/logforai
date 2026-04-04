@@ -1,1 +1,0 @@
-function detect(){return(sOptions=Jpeg.getComment())&&(bDetected=1),result()}meta("image","comment")

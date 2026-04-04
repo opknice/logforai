@@ -64,7 +64,8 @@ sub new {
 	$messageSender = Network::Send->create($self, $masterServer->{serverType});
 	$clientPacketHandler = Network::ClientReceive->new;
 
-	$self->{tokenizer} = new Network::MessageTokenizer($self->getRecvPackets());
+	$self->{serverTokenizer} = new Network::MessageTokenizer($self->getRecvPackets());
+	$self->{clientTokenizer} = new Network::MessageTokenizer($self->getSendPackets());
 	$self->{kore_map_changed_hook} = Plugins::addHook('packet/map_changed', \&kore_map_changed, $self);
 
 	message T("X-Kore mode intialized.\n"), "startup";
@@ -199,19 +200,21 @@ sub clientRecv {
 # msg: A scalar to be sent to the RO client
 #
 sub clientSend {
-	my $self = shift;
-	my $msg = shift;
+    my ($self, $msg) = @_;
+    my $conState = $self->getState();
 
-	my $switch = uc(unpack("H2", substr($msg, 1, 1))) . uc(unpack("H2", substr($msg, 0, 1)));
-	if ($switch eq "02AE") { #initialize_message_id_encryption
-		$msg = "";
-	}
+    # อ่าน 2 bytes สร้าง switch อย่างถูกต้อง
+    my $switch = uc(unpack("H2", substr($msg, 1, 1)) . unpack("H2", substr($msg, 0, 1)));
 
-	$self->{client}->send("R".pack("v", length($msg)).$msg) if ($self->clientAlive);
-}
+    # บล็อก Login/Char/Map-Login packets ที่บอทอาจพยายามส่งเองก่อน Phase 4
+    if ($conState < Network::IN_GAME &&
+        ($switch eq '0826' || $switch eq '0065' || $switch eq '0436')) {
+        debug "Blocked bot-originated auth packet $switch during passive phase\n";
+        return;
+    }
 
-sub clientDisconnect {
-	return undef;
+    $self->{client}->send("R" . pack("v", length($msg)) . $msg)
+        if ($self->clientAlive);
 }
 
 #######################
@@ -580,20 +583,20 @@ sub onClientData {
 	my $additional_data;
 	my $type;
 
-	while (my $message = $self->{tokenizer}->readNext(\$type)) {
+	while (my $message = $self->{clientTokenizer}->readNext(\$type)) {
 		$msg .= $message;
 	}
 	$self->decryptMessageID(\$msg);
 
-	$msg = $self->{tokenizer}->slicePacket($msg, \$additional_data); # slice packet if needed
+	$msg = $self->{clientTokenizer}->slicePacket($msg, \$additional_data); # slice packet if needed
 
-	$self->{tokenizer}->add($msg, 1);
+	$self->{clientTokenizer}->add($msg, 1);
 
 	$messageSender->sendToServer($_) for $messageSender->process(
-		$self->{tokenizer}, $clientPacketHandler
+		$self->{clientTokenizer}, $clientPacketHandler
 	);
 
-	$self->{tokenizer}->clear();
+	$self->{clientTokenizer}->clear();
 
 	if($additional_data) {
 		$self->onClientData($additional_data);
@@ -628,6 +631,56 @@ sub decryptMessageID {
 
 sub getRecvPackets {
 	return \%rpackets;
+}
+
+sub getSendPackets {
+	my ($self) = @_;
+	return $self->{sendPackets} if $self->{sendPackets};
+
+	my %sendPackets;
+	for my $switch (keys %{ $messageSender->{packet_list} }) {
+		my $packet = $messageSender->{packet_list}{$switch};
+		my $packString = $packet->[1];
+		my $length = _getSendPacketLength($packString);
+		$sendPackets{$switch} = { length => $length };
+	}
+
+	$self->{sendPackets} = \%sendPackets;
+	return $self->{sendPackets};
+}
+
+sub _getSendPacketLength {
+	my ($packString) = @_;
+
+	# All packets include a 2-byte switch
+	my $length = 2;
+	return $length unless defined $packString && length $packString;
+
+	for my $token (split /\s+/, $packString) {
+		if ($token =~ /\*/) {
+			return 0;
+		}
+		my ($code, $count) = ($token =~ /^([a-zA-Z])(\d*)$/);
+		unless (defined $code) {
+			return 0;
+		}
+		$count = 1 unless length $count;
+		if ($code eq 'a' || $code eq 'A' || $code eq 'Z' || $code eq 'x') {
+			$length += $count;
+		} elsif ($code eq 'C' || $code eq 'c' || $code eq 'b' || $code eq 'B') {
+			$length += $count;
+		} elsif ($code eq 'v' || $code eq 's' || $code eq 'S') {
+			$length += 2 * $count;
+		} elsif ($code eq 'V' || $code eq 'l' || $code eq 'L' || $code eq 'f') {
+			$length += 4 * $count;
+		} elsif ($code eq 'd') {
+			$length += 8 * $count;
+		} else {
+			return 0;
+		}
+	}
+
+	return $length;
 }
 
 sub kore_map_changed {

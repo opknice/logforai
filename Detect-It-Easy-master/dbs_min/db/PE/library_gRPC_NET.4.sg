@@ -1,1 +1,0 @@
-function detect(){return PE.isNetObjectPresent("Grpc.Core.Api")&&(bDetected=1),result()}meta("library","gRPC.NET")

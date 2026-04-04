@@ -1,1 +1,0 @@
-function detect(){return Binary.compare("'ESIV'abbc19")&&(sOptions="Big endian",bDetected=1),result()}meta("archive","Vise Installer")

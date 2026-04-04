@@ -1,1 +1,0 @@
-function detect(){return PE.isLibraryPresentExp(/libfaad/i)&&(bDetected=1),result()}meta("library","FAAD")

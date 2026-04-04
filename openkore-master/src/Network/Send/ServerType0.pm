@@ -37,7 +37,7 @@ sub new {
 	my $self = $class->SUPER::new(@_);
 
 	my %packets = (
-		'0064' => ['master_login', 'V Z24 Z24 C', [qw(version username password master_version)]],
+		#'0064' => ['master_login', 'V Z24 Z24 C', [qw(version username password master_version)]],
 		'0065' => ['game_login', 'a4 a4 a4 v C', [qw(accountID sessionID sessionID2 userLevel accountSex)]],
 		'0066' => ['char_login', 'C', [qw(slot)]],
 		'0067' => ['char_create', 'a24 C7 v2', [qw(name str agi vit int dex luk slot hair_color hair_style)]],
@@ -221,7 +221,7 @@ sub new {
 		'0367' => ['skill_use_location_text', 'v5 Z80', [qw(lvl ID x y info)]],
 		'0368' => ['actor_info_request', 'a4', [qw(ID)]],
 		'0369' => ['actor_name_request', 'a4', [qw(ID)]],
-		'0436' => ['map_login', 'a4 a4 a4 V C', [qw(accountID charID sessionID tick sex)]],
+		'0436' => ['map_login', 'a4 a4 a4 V2 C', [qw(accountID charID sessionID unknown tick sex)]],
 		'0437' => ['actor_action', 'a4 C', [qw(targetID type)]],
 		'0438' => ['skill_use', 'v2 a4', [qw(lv skillID targetID)]],
 		'0439' => ['item_use', 'a2 a4', [qw(ID targetID)]],
@@ -242,6 +242,7 @@ sub new {
 		'0817' => ['buy_bulk_request', 'a4', [qw(ID)]], #6
 		'0819' => ['buy_bulk_buyer', 'v a4 a4 a*', [qw(len buyerID buyingStoreID itemInfo)]], #Buying store
 		'0825' => ['token_login', 'v v x v Z24 a27 Z17 Z15 a*', [qw(len version master_version username password_rijndael mac ip token)]], # kRO Zero 2017/2018 login
+		'0826' => ['char_login2', 'v a*', [qw(dummy)]], # fixed-length 4 packet for Picky RO char server handshake
 		'0827' => ['char_delete2', 'a4', [qw(charID)]], # 6
 		'0829' => ['char_delete2_accept', 'a4 a6', [qw(charID code)]], # 12
 		'082B' => ['char_delete2_cancel', 'a4', [qw(charID)]], # 6
@@ -507,6 +508,13 @@ sub sendCaptchaInitiate {
 	my $msg = pack('v2', 0x07E5, 0x0);
 	$self->sendToServer($msg);
 	debug "Sending Captcha Initiate\n";
+}
+
+sub map_login {
+    my ($self, $accountID, $charID, $sessionID, $tick, $sex) = @_;
+    # โครงสร้าง 23 ไบต์ตาม Log: Switch(2) + AID(4) + GID(4) + Session(4) + Null(4) + Tick(4) + Sex(1)
+    my $msg = pack("v a4 a4 a4 V V C", 0x0436, $accountID, $charID, $sessionID, 0, $tick, $sex);
+    $self->sendRaw($msg);
 }
 
 1;

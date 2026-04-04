@@ -1,1 +1,0 @@
-function detect(){return Binary.compare("'idska32'1a")&&(bDetected=1),result()}meta("archive","Inno Setup")

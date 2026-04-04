@@ -1,1 +1,0 @@
-function detect(){return bDetected=APK.isArchiveRecordPresent("assets/appdefence_xml"),result()}meta("protector","ExTrus AppDefence")

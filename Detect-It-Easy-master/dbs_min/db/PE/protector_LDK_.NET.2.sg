@@ -1,1 +1,0 @@
-function detect(){return PE.isNet()&&PE.isNetObjectPresent(".protect")&&PE.isNetObjectPresent("haspdnert.dll")&&(bDetected=1),result()}meta("protector","SafeNet Sentinel LDK .NET")

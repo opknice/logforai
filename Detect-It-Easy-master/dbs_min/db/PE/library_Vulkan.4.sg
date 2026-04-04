@@ -1,1 +1,0 @@
-function detect(){return(PE.isLibraryPresentExp(/[V|v]ulkan/i)||PE.isExportFunctionPresentExp(/VULKAN/))&&(bDetected=1),result()}meta("library","Vulkan")

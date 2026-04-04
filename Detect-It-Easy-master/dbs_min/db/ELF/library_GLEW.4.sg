@@ -1,1 +1,0 @@
-function detect(){return ELF.isLibraryPresent("libGLEW.so.2.2")&&(bDetected=1),result()}meta("library","GLEW")

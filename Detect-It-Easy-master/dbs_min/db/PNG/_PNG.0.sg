@@ -1,1 +1,0 @@
-function detect(){return sName=PNG.getFileFormatName(),sVersion=PNG.getFileFormatVersion(),sOptions=PNG.getFileFormatOptions(),sName&&(bDetected=1),result()}meta("format","PNG")

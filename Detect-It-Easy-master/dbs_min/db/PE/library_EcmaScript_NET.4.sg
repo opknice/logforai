@@ -1,1 +1,0 @@
-function detect(){return PE.isNetObjectPresent("EcmaScript.NET")&&(bDetected=1),result()}meta("library","EcmaScript.NET")

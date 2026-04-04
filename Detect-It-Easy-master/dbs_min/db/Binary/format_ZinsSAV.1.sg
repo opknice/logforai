@@ -1,1 +1,0 @@
-function detect(){return Binary.compare("'ZinsSAV'000001")&&(bDetected=1),result()}meta("format","Captain Zins Save")

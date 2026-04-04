@@ -1,1 +1,0 @@
-function detect(){return PE.isNetObjectPresent("Scrutor")&&(bDetected=1),result()}meta("library","Scrutor")

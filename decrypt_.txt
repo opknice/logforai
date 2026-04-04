@@ -1,0 +1,214 @@
+00D7FE40 | 0F1081 94070000          | movups xmm0,xmmword ptr ds:[ecx+794]    | sub_D7FE40
+00D7FE47 | 8B15 B8AC2201            | mov edx,dword ptr ds:[122ACB8]          |
+00D7FE4D | 33C0                     | xor eax,eax                             |
+00D7FE4F | 0F1105 68256001          | movups xmmword ptr ds:[1602568],xmm0    | 01602568:"55555"
+00D7FE56 | 0F1081 A4070000          | movups xmm0,xmmword ptr ds:[ecx+7A4]    |
+00D7FE5D | 0F1105 78256001          | movups xmmword ptr ds:[1602578],xmm0    |
+00D7FE64 | 0F1081 B4070000          | movups xmm0,xmmword ptr ds:[ecx+7B4]    |
+00D7FE6B | 0F1105 88256001          | movups xmmword ptr ds:[1602588],xmm0    |
+00D7FE72 | 0F1081 C4070000          | movups xmm0,xmmword ptr ds:[ecx+7C4]    |
+00D7FE79 | 8D4A 3F                  | lea ecx,dword ptr ds:[edx+3F]           |
+00D7FE7C | 0F1105 98256001          | movups xmmword ptr ds:[1602598],xmm0    |
+00D7FE83 | 81F9 68256001            | cmp ecx,rag.1602568                     | 1602568:"55555"
+00D7FE89 | 72 2E                    | jb rag.D7FEB9                           |
+00D7FE8B | 81FA A7256001            | cmp edx,rag.16025A7                     |
+00D7FE91 | 77 26                    | ja rag.D7FEB9                           |
+00D7FE93 | 81EA 68256001            | sub edx,rag.1602568                     | 1602568:"55555"
+00D7FE99 | 0F1F80 00000000          | nop dword ptr ds:[eax],eax              |
+00D7FEA0 | 8A8C02 68256001          | mov cl,byte ptr ds:[edx+eax+1602568]    | edx+eax*1+1602568:"55555"
+00D7FEA7 | 3088 68256001            | xor byte ptr ds:[eax+1602568],cl        | eax+1602568:"55555"
+00D7FEAD | 40                       | inc eax                                 |
+00D7FEAE | 83F8 40                  | cmp eax,40                              | 40:'@'
+00D7FEB1 | 72 ED                    | jb rag.D7FEA0                           |
+00D7FEB3 | B8 68256001              | mov eax,rag.1602568                     | 1602568:"55555"
+00D7FEB8 | C3                       | ret                                     |
+00D7FEB9 | 0F100A                   | movups xmm1,xmmword ptr ds:[edx]        |
+00D7FEBC | B8 68256001              | mov eax,rag.1602568                     | 1602568:"55555"
+00D7FEC1 | 0F1005 68256001          | movups xmm0,xmmword ptr ds:[1602568]    | 01602568:"55555"
+00D7FEC8 | 66:0FEFC8                | pxor xmm1,xmm0                          |
+00D7FECC | 0F1005 78256001          | movups xmm0,xmmword ptr ds:[1602578]    |
+00D7FED3 | 0F110D 68256001          | movups xmmword ptr ds:[1602568],xmm1    | 01602568:"55555"
+00D7FEDA | 0F104A 10                | movups xmm1,xmmword ptr ds:[edx+10]     |
+00D7FEDE | 66:0FEFC8                | pxor xmm1,xmm0                          |
+00D7FEE2 | 0F1005 88256001          | movups xmm0,xmmword ptr ds:[1602588]    |
+00D7FEE9 | 0F110D 78256001          | movups xmmword ptr ds:[1602578],xmm1    |
+00D7FEF0 | 0F104A 20                | movups xmm1,xmmword ptr ds:[edx+20]     |
+00D7FEF4 | 66:0FEFC8                | pxor xmm1,xmm0                          |
+00D7FEF8 | 0F1005 98256001          | movups xmm0,xmmword ptr ds:[1602598]    |
+00D7FEFF | 0F110D 88256001          | movups xmmword ptr ds:[1602588],xmm1    |
+00D7FF06 | 0F104A 30                | movups xmm1,xmmword ptr ds:[edx+30]     |
+00D7FF0A | 66:0FEFC8                | pxor xmm1,xmm0                          |
+00D7FF0E | 0F110D 98256001          | movups xmmword ptr ds:[1602598],xmm1    |
+00D7FF15 | C3                       | ret                                     | breakif(0), logif(1, [Packet] ID: {mem;2@01602568} | Length: {d:[esp+4]} | Caller: {caller})
+
+
+Address=005ACBF6
+Disassembly=call <rag.sub_D7FE40>
+Address=005B3611
+Disassembly=call <rag.sub_D7FE40>
+Address=00706837
+Disassembly=call <rag.sub_D7FE40>
+Address=007070AA
+Disassembly=call <rag.sub_D7FE40>
+Address=0070739A
+Disassembly=call <rag.sub_D7FE40>
+Address=0070747E
+Disassembly=call <rag.sub_D7FE40>
+Address=0070994F
+Disassembly=call <rag.sub_D7FE40>
+Address=0070A187
+Disassembly=call <rag.sub_D7FE40>
+Address=0070A4CA
+Disassembly=call <rag.sub_D7FE40>
+Address=0070A5DC
+Disassembly=call <rag.sub_D7FE40>
+Address=00783BBE
+Disassembly=call <rag.sub_D7FE40>
+Address=007860AA
+Disassembly=call <rag.sub_D7FE40>
+Address=00786952
+Disassembly=call <rag.sub_D7FE40>
+Address=0078743E
+Disassembly=call <rag.sub_D7FE40>
+Address=007EEA09
+Disassembly=call <rag.sub_D7FE40>
+Address=007F2F83
+Disassembly=call <rag.sub_D7FE40>
+Address=007F332B
+Disassembly=call <rag.sub_D7FE40>
+Address=007F3673
+Disassembly=call <rag.sub_D7FE40>
+Address=00882252
+Disassembly=call <rag.sub_D7FE40>
+Address=008826CA
+Disassembly=call <rag.sub_D7FE40>
+Address=00883590
+Disassembly=call <rag.sub_D7FE40>
+Address=008BC197
+Disassembly=call <rag.sub_D7FE40>
+Address=008BD192
+Disassembly=call <rag.sub_D7FE40>
+Address=008D0F67
+Disassembly=call <rag.sub_D7FE40>
+Address=008DFC38
+Disassembly=call <rag.sub_D7FE40>
+Address=008E216A
+Disassembly=call <rag.sub_D7FE40>
+Address=008FD030
+Disassembly=call <rag.sub_D7FE40>
+Address=008FFAAE
+Disassembly=call <rag.sub_D7FE40>
+Address=00928888
+Disassembly=call <rag.sub_D7FE40>
+Address=009460B1
+Disassembly=call <rag.sub_D7FE40>
+Address=0094611A
+Disassembly=call <rag.sub_D7FE40>
+Address=0095DFF3
+Disassembly=call <rag.sub_D7FE40>
+Address=0095E0DD
+Disassembly=call <rag.sub_D7FE40>
+Address=0095E279
+Disassembly=call <rag.sub_D7FE40>
+Address=0096ED19
+Disassembly=call <rag.sub_D7FE40>
+Address=0096ED5D
+Disassembly=call <rag.sub_D7FE40>
+Address=0096EDF3
+Disassembly=call <rag.sub_D7FE40>
+Address=0099B8BB
+Disassembly=call <rag.sub_D7FE40>
+Address=00A2CDE5
+Disassembly=call <rag.sub_D7FE40>
+Address=00C73439
+Disassembly=call <rag.sub_D7FE40>
+Address=00C734C3
+Disassembly=call <rag.sub_D7FE40>
+Address=00C8A42F
+Disassembly=call <rag.sub_D7FE40>
+Address=00C8A768
+Disassembly=call <rag.sub_D7FE40>
+Address=00C8AC39
+Disassembly=call <rag.sub_D7FE40>
+Address=00C8AC90
+Disassembly=call <rag.sub_D7FE40>
+Address=00C8B0B5
+Disassembly=call <rag.sub_D7FE40>
+Address=00C8B350
+Disassembly=call <rag.sub_D7FE40>
+Address=00C8B78E
+Disassembly=call <rag.sub_D7FE40>
+Address=00C8BA0E
+Disassembly=call <rag.sub_D7FE40>
+Address=00C8BC81
+Disassembly=call <rag.sub_D7FE40>
+Address=00C9064F
+Disassembly=call <rag.sub_D7FE40>
+Address=00C909F1
+Disassembly=call <rag.sub_D7FE40>
+Address=00C915C1
+Disassembly=call <rag.sub_D7FE40>
+Address=00C91F90
+Disassembly=call <rag.sub_D7FE40>
+Address=00C92CD8
+Disassembly=call <rag.sub_D7FE40>
+Address=00C9D082
+Disassembly=call <rag.sub_D7FE40>
+Address=00CA182B
+Disassembly=call <rag.sub_D7FE40>
+Address=00CA1918
+Disassembly=call <rag.sub_D7FE40>
+Address=00CA1A18
+Disassembly=call <rag.sub_D7FE40>
+Address=00CA7792
+Disassembly=call <rag.sub_D7FE40>
+Address=00CB0A63
+Disassembly=call <rag.sub_D7FE40>
+Address=00CB194B
+Disassembly=call <rag.sub_D7FE40>
+Address=00CBB634
+Disassembly=call <rag.sub_D7FE40>
+Address=00CBBC0A
+Disassembly=call <rag.sub_D7FE40>
+Address=00CBFE30
+Disassembly=call <rag.sub_D7FE40>
+Address=00CC64CE
+Disassembly=call <rag.sub_D7FE40>
+Address=00CC665B
+Disassembly=call <rag.sub_D7FE40>
+Address=00CCC069
+Disassembly=call <rag.sub_D7FE40>
+Address=00CCC07F
+Disassembly=call <rag.sub_D7FE40>
+Address=00CD971D
+Disassembly=call <rag.sub_D7FE40>
+Address=00CD9763
+Disassembly=call <rag.sub_D7FE40>
+Address=00CD9844
+Disassembly=call <rag.sub_D7FE40>
+Address=00CD989E
+Disassembly=call <rag.sub_D7FE40>
+Address=00CDCF5F
+Disassembly=call <rag.sub_D7FE40>
+Address=00CDE3CF
+Disassembly=call <rag.sub_D7FE40>
+Address=00CDE81A
+Disassembly=call <rag.sub_D7FE40>
+Address=00CE1B50
+Disassembly=call <rag.sub_D7FE40>
+Address=00CE1DC7
+Disassembly=call <rag.sub_D7FE40>
+Address=00CE21B4
+Disassembly=call <rag.sub_D7FE40>
+Address=00CE394B
+Disassembly=call <rag.sub_D7FE40>
+Address=00CE3F68
+Disassembly=call <rag.sub_D7FE40>
+Address=00D1BDC7
+Disassembly=call <rag.sub_D7FE40>
+Address=00D65F4E
+Disassembly=call <rag.sub_D7FE40>
+Address=00D71DB1
+Disassembly=call <rag.sub_D7FE40>
+Address=00D7687A
+Disassembly=call <rag.sub_D7FE40>

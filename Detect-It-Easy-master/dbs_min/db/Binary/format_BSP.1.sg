@@ -1,1 +1,0 @@
-function detect(){return Binary.compare("'VBSP'15000000")&&(bDetected=1),result()}meta("format","BSP")

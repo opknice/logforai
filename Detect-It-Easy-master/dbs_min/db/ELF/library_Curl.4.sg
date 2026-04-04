@@ -1,1 +1,0 @@
-function detect(){return ELF.isLibraryPresent("libcurl.so.4")&&(bDetected=1),result()}meta("library","Curl")

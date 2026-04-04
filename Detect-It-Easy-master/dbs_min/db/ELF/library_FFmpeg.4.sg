@@ -1,1 +1,0 @@
-function detect(){return ELF.isLibraryPresent("libffmpeg.so")&&(bDetected=1),result()}meta("library","FFmpeg")

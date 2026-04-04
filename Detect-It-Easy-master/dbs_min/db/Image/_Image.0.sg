@@ -1,1 +1,0 @@
-function detect(){return Image.isVerbose()&&(sName=Image.getFileFormatName(),sVersion=Image.getFileFormatVersion(),sOptions=Image.getFileFormatOptions(),sName)&&(bDetected=1),result()}meta("format","Image")

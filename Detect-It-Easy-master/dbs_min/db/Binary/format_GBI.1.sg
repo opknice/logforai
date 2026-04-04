@@ -1,1 +1,0 @@
-function detect(){return Binary.compare("'GBI'000000000000000000000000004C")&&(bDetected=1),result()}meta("format","gBurner Image (.GBI)")

@@ -1,1 +1,0 @@
-function detect(){return PE.isNetObjectPresent("Sigil")&&(bDetected=1),result()}meta("library","Sigil Helper")
