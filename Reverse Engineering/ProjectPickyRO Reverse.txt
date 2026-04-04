@@ -1,0 +1,17 @@
+คำสั่งหา Seed 
+map_cache.grf + D703
+0
+SEED: {mem;20@[esp+4]}
+1
+
+
+
+00C9E224 | 0FB7C8                   | movzx ecx,ax                            | ecx:NtGdiDdDDILock2+C, breakif(0), logif(1, [PacketHandler] ID: {ax} | Buffer: {mem;16@15E8198})
+packethandler 
+0
+[PacketHandler] ID: {ax} | Buffer: {mem;16@15E8198}
+4
+
+
+
+

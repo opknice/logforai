@@ -1,0 +1,71 @@
+[14:38:51] [SALT] ASCII: gGaKzO7q8fLy1ipO1ykIvU1jU983Blzh
+
+[14:40:12] [C->S] raw bytes:  0xDB, 0x01 
+
+[14:40:12] [S->C] raw bytes:  0xDC, 0x01, 0x18, 0x00, 0x85, 0x28, 0x37, 0xE4, 0xE4, 0xDE, 0x6A, 0x0D, 0xFA, 0xCA, 0xD4, 0x5D, 0x54, 0xA6, 0x03, 0xC5, 0x0C, 0x85, 0xD1, 0x7B 
+
+[14:40:14] [SEED] 85 28 37 E4 E4 DE 6A 0D FA CA D4 5D 54 A6 03 C5 0C 85 D1 7B
+
+[14:40:14] [C->S] raw bytes:  0x26, 0x08, 0x89, 0x00, 0x03, 0x00, 0x00, 0x80, 0x00, 0x6E, 0x69, 0x63, 0x65, 0x63, 0x70, 0x65, 0x31, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x30, 0x64, 0x61, 0x32, 0x64, 0x30, 0x31, 0x35, 0x65, 0x62, 0x66, 0x61, 0x36, 0x63, 0x61, 0x63, 0x66, 0x38, 0x36, 0x32, 0x30, 0x30, 0x39, 0x63, 0x32, 0x63, 0x64, 0x30, 0x35, 0x36, 0x30, 0x00, 0x66, 0x62, 0x37, 0x62, 0x66, 0x66, 0x31, 0x32, 0x62, 0x65, 0x30, 0x63, 0x39, 0x31, 0x65, 0x31, 0x34, 0x34, 0x32, 0x35, 0x64, 0x39, 0x37, 0x36, 0x30, 0x30, 0x39, 0x36, 0x63, 0x30, 0x32, 0x39, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30 
+
+[14:40:14] [S->C] raw bytes:  0xC4, 0x0A, 0xE0, 0x00, 0x87, 0x42, 0xA4, 0xF6, 0x5B, 0xAC, 0x1E, 0x00, 0xE9, 0x4A, 0xC9, 0x71, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x39, 0x32, 0x33, 0x31, 0x62, 0x65, 0x37, 0x64, 0x65, 0x63, 0x39, 0x63, 0x63, 0x31, 0x64, 0x39, 0x00, 0xA8, 0xDE, 0x3C, 0x52, 0xE9, 0x17, 0x50, 0x69, 0x63, 0x6B, 0x79, 0x20, 0x52, 0x61, 0x67, 0x6E, 0x61, 0x72, 0x6F, 0x6B, 0x20, 0x43, 0x6C, 0x61, 0x73, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 
+
+6508D52D | 0FB646 08                | movzx eax,byte ptr ds:[esi+8]           | esi+08:"cecpe1"
+6508D531 | A3 E04D0F65              | mov dword ptr ds:[650F4DE0],eax         |
+6508D536 | 8B46 04                  | mov eax,dword ptr ds:[esi+4]            |
+6508D539 | A3 DC4D0F65              | mov dword ptr ds:[650F4DDC],eax         |
+6508D53E | 8D46 09                  | lea eax,dword ptr ds:[esi+9]            | [esi+09]:public: __thiscall Stove::Engine::Core::engine_ptr<class Stove::Engine::Core::Component>::engine_ptr<class Stove::Engine::Core::Component>(class Stove::Engine::Core::engine_ptr<class Stove::Engine::Core::Component> const &)+72935
+6508D541 | 6A 18                    | push 18                                 |
+6508D543 | 50                       | push eax                                |
+6508D544 | 6A 18                    | push 18                                 |
+6508D546 | 68 E44D0F65              | push map_cache.650F4DE4                 | 650F4DE4:"nicecpe1"
+6508D54B | E8 40240200              | call map_cache.650AF990                 |
+6508D550 | 6A 21                    | push 21                                 |
+6508D552 | 8D46 5C                  | lea eax,dword ptr ds:[esi+5C]           |
+6508D555 | 50                       | push eax                                |
+6508D556 | 6A 21                    | push 21                                 |
+6508D558 | 68 FC4D0F65              | push map_cache.650F4DFC                 | 650F4DFC:"cpe54146"
+6508D55D | E8 2E240200              | call map_cache.650AF990                 |
+6508D562 | BB 10000000              | mov ebx,10                              |
+6508D567 | C745 10 584E0F65         | mov dword ptr ss:[ebp+10],map_cache.650 | [ebp+10]:"cpe54146"
+6508D56E | 83C4 20                  | add esp,20                              |
+6508D571 | C745 0C 4D000000         | mov dword ptr ss:[ebp+C],4D             | 4D:'M'
+6508D578 | BA 444E0F65              | mov edx,map_cache.650F4E44              | edx:"nicecpe1"
+6508D57D | 8D4B 02                  | lea ecx,dword ptr ds:[ebx+2]            |
+6508D580 | 8D43 2C                  | lea eax,dword ptr ds:[ebx+2C]           |
+6508D583 | EB 2A                    | jmp map_cache.6508D5AF                  |
+6508D585 | 8B46 02                  | mov eax,dword ptr ds:[esi+2]            |
+6508D588 | BB 21000000              | mov ebx,21                              | 21:'!'
+6508D58D | A3 DC4D0F65              | mov dword ptr ds:[650F4DDC],eax         |
+6508D592 | BA E44D0F65              | mov edx,map_cache.650F4DE4              | edx:"nicecpe1", 650F4DE4:"nicecpe1"
+6508D597 | C745 10 FC4D0F65         | mov dword ptr ss:[ebp+10],map_cache.650 | [ebp+10]:"cpe54146", 650F4DFC:"cpe54146"
+6508D59E | B9 18000000              | mov ecx,18                              |
+6508D5A3 | C745 0C 1E000000         | mov dword ptr ss:[ebp+C],1E             |
+6508D5AA | B8 06000000              | mov eax,6                               |
+6508D5AF | 51                       | push ecx                                |
+6508D5B0 | 03C6                     | add eax,esi                             |
+6508D5B2 | 50                       | push eax                                |
+6508D5B3 | 51                       | push ecx                                |
+6508D5B4 | 52                       | push edx                                | edx:"nicecpe1"
+6508D5B5 | E8 D6230200              | call map_cache.650AF990                 |
+6508D5BA | 8B45 0C                  | mov eax,dword ptr ss:[ebp+C]            |
+6508D5BD | 53                       | push ebx                                |
+6508D5BE | 03C6                     | add eax,esi                             |
+6508D5C0 | 50                       | push eax                                |
+6508D5C1 | 53                       | push ebx                                |
+6508D5C2 | FF75 10                  | push dword ptr ss:[ebp+10]              | [ebp+10]:"cpe54146"
+6508D5C5 | E8 C6230200              | call map_cache.650AF990                 |
+6508D5CA | 83C4 20                  | add esp,20                              |
+6508D5CD | B8 DB010000              | mov eax,1DB                             |
+6508D5D2 | 66:A3 40410E65           | mov word ptr ds:[650E4140],ax           |
+6508D5D8 | FF75 14                  | push dword ptr ss:[ebp+14]              |
+6508D5DB | 6A 02                    | push 2                                  |
+6508D5DD | 68 40410E65              | push map_cache.650E4140                 |
+6508D5E2 | FF75 08                  | push dword ptr ss:[ebp+8]               |
+6508D5E5 | FF15 D04D0F65            | call dword ptr ds:[650F4DD0]            |
+6508D5EB | 5B                       | pop ebx                                 |
+6508D5EC | 8BC7                     | mov eax,edi                             |
+6508D5EE | 5F                       | pop edi                                 |
+6508D5EF | 5E                       | pop esi                                 |
+6508D5F0 | 5D                       | pop ebp                                 |
+6508D5F1 | C2 1000                  | ret 10                                  |
